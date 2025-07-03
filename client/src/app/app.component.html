@@ -1,0 +1,11 @@
+<div class="app-container">
+  <mat-toolbar color="primary" class="sticky-toolbar">
+    <app-back-button *ngIf="showBackButton$ | async"></app-back-button>
+    <mat-icon *ngIf="!(showBackButton$ | async)" class="toolbar-icon">power</mat-icon>
+    <span>{{ title$ | async }}</span>
+  </mat-toolbar>
+
+  <main #scrollableContent class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

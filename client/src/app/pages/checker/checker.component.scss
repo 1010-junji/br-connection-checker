@@ -1,0 +1,99 @@
+.checker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// --- フォームカード関連のスタイル ---
+
+.form-card-content {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start; // 上揃え
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; // グループ間のスペース
+}
+
+.check-target-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 16px 16px 0px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; // グループ内の行間のスペース
+
+    .target-title {
+        margin: 0 0 8px 0;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.7);
+    }
+}
+
+.image-container {
+    flex: 1; // 右半分
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    //background-color: #fafafa; // 画像の背景色
+    border-radius: 4px;
+
+    img {
+        max-width: 100%;
+        max-height: 300px;
+        object-fit: contain; // アスペクト比を保ってフィット
+    }
+}
+
+
+// 1行をすべて使うフィールド
+.full-width-field {
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px; // ホスト名とポート間のスペース
+    align-items: center;
+
+    // .form-row の直接の子である mat-form-field にスタイルを適用
+    >.host-field {
+        // 全体の幅から、隙間(16px)の幅を引き、その残りの 4/5 を幅として指定
+        width: calc((100% - 16px) * 0.8);
+    }
+
+    >.port-field {
+        // 全体の幅から、隙間(16px)の幅を引き、その残りの 1/5 を幅として指定
+        width: calc((100% - 16px) * 0.2);
+    }
+}
+
+// --- ログカード関連のスタイル ---
+
+.log-card .log-output {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    padding: 16px;
+    border-radius: 4px;
+    min-height: 100px;
+    max-height: 70vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Consolas', 'Courier New', monospace;
+
+    ::ng-deep {
+        .log-ok {
+            color: #81c784;
+        }
+
+        .log-ng {
+            color: #e57373;
+        }
+    } 
+}

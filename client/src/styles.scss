@@ -1,0 +1,85 @@
+/* You can add global styles to this file, and also import other style files */
+
+// 1. Angular Materialのコア機能とテーマ機能をインポート
+@use '@angular/material' as mat;
+
+// 2. typography(フォント設定など)のコアスタイルをインポート
+@include mat.core();
+
+// 3. カスタムカラーパレットを定義する
+// モスグリーン系の配色を定義します。
+// 500がメインの色、100が薄い色、700が濃い色、というように段階的に定義します。
+// 色は https://m2.material.io/design/color/the-color-system.html#color-usage-and-palettes を参考にすると良いです。
+$moss-green-palette: (
+    50: #e8f5e9,
+    100: #c8e6c9,
+    200: #a5d6a7,
+    300: #81c784,
+    400: #66bb6a,
+    500: #4caf50,
+    // <-- メインのPrimaryカラー (モスグリーン系)
+    600: #43a047,
+    700: #388e3c,
+    // <-- Primaryの濃い色 (Dark)
+    800: #2e7d32,
+    900: #1b5e20,
+    contrast: (50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
+        400: #000000,
+        500: #ffffff, // <-- メインカラーの上の文字色 (白)
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+    )
+);
+
+// アクセントカラーとして、少し落ち着いたオレンジ系を定義（任意で変更可能）
+$warm-amber-palette: (
+    50: #fff8e1,
+    100: #ffecb3,
+    200: #ffe082,
+    300: #ffd54f,
+    400: #ffca28,
+    500: #ffc107,
+    600: #ffb300,
+    700: #ffa000,
+    // <-- メインのAccentカラー
+    800: #ff8f00,
+    900: #ff6f00,
+    contrast: ( // ...
+        700: #000000, // <-- Accentカラーの上の文字色 (黒)
+    )
+);
+
+
+// 4. パレットからAngular Materialが使えるテーマカラーを生成する
+$checker-app-primary: mat.define-palette($moss-green-palette, 800, 500, 900);
+$checker-app-accent: mat.define-palette($warm-amber-palette, 700);
+
+// warnカラーはデフォルトの赤をそのまま使う
+$checker-app-warn: mat.define-palette(mat.$red-palette);
+
+// 5. 生成したカラーを使って、ライトテーマを作成する
+$checker-app-theme: mat.define-light-theme((color: (primary: $checker-app-primary,
+                accent: $checker-app-accent,
+                warn: $checker-app-warn,
+            )));
+
+// 6. 作成したカスタムテーマをアプリケーション全体に適用する
+@include mat.all-component-themes($checker-app-theme);
+
+
+// --- 以下、既存のグローバルスタイル ---
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: #f5f5f5;
+}

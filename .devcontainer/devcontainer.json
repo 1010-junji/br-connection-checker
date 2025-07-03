@@ -1,0 +1,20 @@
+{
+    "name": "Angular / Node.js Dev Container (Angular Electron)",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces",
+    "postCreateCommand": "sudo chown -R node:node /workspaces/*",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode-remote.remote-containers", "Angular.ng-template",
+                "dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "eamodio.gitlens",
+                "formulahendry.auto-rename-tag", "mhutchie.git-graph",
+                "pkief.material-icon-theme", "ms-azuretools.vscode-docker",
+                "arjun.swagger-viewer", "google.geminicodeassist"
+            ]
+        }
+    },
+    "forwardPorts": [4200, 3000],
+    "remoteUser": "node"
+}

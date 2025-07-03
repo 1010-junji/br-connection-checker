@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    container_name: angular-electron
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # ポートフォワーディングの設定
+    ports:
+      - "4200:4200" # Angular Dev Server
+      - "3000:3000" # 将来的な利用を想定 (今回は未使用)
+    # ボリュームマウントの設定
+    volumes:
+      - ..:/workspaces:cached
+      - client_node_modules:/workspaces/client/node_modules
+      - ng_cache:/workspaces/client/.angular/cache
+    # コンテナを起動し続けるためのコマンド
+    command: sleep infinity
+volumes:
+  client_node_modules:
+  ng_cache:

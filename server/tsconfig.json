@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "outDir": "./dist", // コンパイル後のJSファイルが出力されるディレクトリ
+    "rootDir": "./src", // TypeScriptソースファイルのルートディレクトリ
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"], // コンパイル対象
+  "exclude": ["node_modules"]
+}

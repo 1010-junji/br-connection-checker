@@ -1,0 +1,61 @@
+{
+  "name": "br-connection-checker",
+  "version": "0.1.1",
+  "main": "dist/main.js",
+  "scripts": {
+    "build:main": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --external:electron",
+    "build:preload": "esbuild src/preload.ts --bundle --platform=node --outfile=dist/preload.js --external:electron",
+    "build": "npm-run-all --parallel build:*",
+    "start": "npm run build && electron .",
+    "watch:main": "npm run build:main -- --watch",
+    "watch:preload": "npm run build:preload -- --watch",
+    "watch": "npm-run-all --parallel watch:*",
+    "package": "npm run build && electron-builder"
+  },
+  "keywords": ["BizRobo"],
+  "author": "JO",
+  "license": "MIT",
+  "description": "BizRobo! の構成に従い、コンポーネント間の接続を確認するためのアプリケーションです。",
+  "engines": {
+    "node": "^20.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.6",
+    "@types/ping": "^0.4.4",
+    "electron": "^37.1.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.25.5",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "electron-serve": "^1.3.0",
+    "ping": "^0.4.4"
+  },
+  "build": {
+    "appId": "com.bizrobo.opekai.br-connection-checker",
+    "productName": "BR Connection Checker",
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "../client/dist/connection-checker-app",
+        "to": "app",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
