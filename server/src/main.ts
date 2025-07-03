@@ -152,6 +152,7 @@ ipcMain.handle(channels.RUN_CHECK, async (event, mode, params) => {
       sendProgress('\n【DS -> DAS】');
       await checkPing(params.dashost);
       await checkTcpPort(params.dashost, params.portNumber1);
+      await checkTcpPort(params.dashost, params.portNumber2);
       break;
       
     case 'kapplets':
