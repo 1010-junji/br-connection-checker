@@ -71,6 +71,14 @@ $checker-app-theme: mat.define-light-theme((color: (primary: $checker-app-primar
 // 6. 作成したカスタムテーマをアプリケーション全体に適用する
 @include mat.all-component-themes($checker-app-theme);
 
+// Material Iconsをローカルから読み込む
+@import 'material-icons/iconfont/material-icons.css';
+
+// Robotoフォントをローカルから読み込む (index.htmlで指定されていたウェイト)
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
 
 // --- 以下、既存のグローバルスタイル ---
 html,
