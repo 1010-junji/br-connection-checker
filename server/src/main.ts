@@ -18,6 +18,7 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 800,
+    resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

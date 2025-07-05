@@ -1,99 +1,97 @@
 .checker-container {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
 }
 
-// --- フォームカード関連のスタイル ---
+.form-card {
+    .form-card-content {
+        display: flex;
+        gap: 16px;
+        align-items: stretch; // フォームとSVGの高さを揃える
+    }
 
-.form-card-content {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start; // 上揃え
-}
+    .form-container {
+        flex: 1;
+        min-width: 350px; // フォームの最小幅を確保
+    }
 
-.form-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px; // グループ間のスペース
-}
+    .check-target-group {
+        margin-bottom: 16px;
+        padding: 12px 12px 0 12px;
+        border: 1px solid #eee;
+        border-radius: 4px;
 
-.check-target-group {
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 16px 16px 0px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px; // グループ内の行間のスペース
+        .target-title {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #3f51b5; // primary color
+        }
+    }
 
-    .target-title {
-        margin: 0 0 8px 0;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.7);
+    .form-row {
+        display: flex;
+        gap: 8px;
+    }
+
+    // --- フィールド幅のクラス ---
+    .host-field {
+        flex: 2; // ホスト名を広く
+    }
+
+    .port-field {
+        flex: 1; // ポートは狭く
+    }
+
+    .full-width-field {
+        flex: 1; // 1列の場合は全幅
     }
 }
 
+// SVGコンテナのスタイル
 .image-container {
-    flex: 1; // 右半分
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
-    //background-color: #fafafa; // 画像の背景色
-    border-radius: 4px;
+    background-color: #fcfcfc;
 
-    img {
-        max-width: 100%;
-        max-height: 300px;
-        object-fit: contain; // アスペクト比を保ってフィット
+    .svg-wrapper {
+        width: 100%;
+        height: 100%;
     }
 }
 
+.log-card {
+    .log-output {
+        background-color: #212121;
+        color: #f5f5f5;
+        padding: 16px;
+        border-radius: 4px;
+        height: 510px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
 
-// 1行をすべて使うフィールド
-.full-width-field {
-    width: 100%;
-}
+        // stylelint-disable-next-line
+        ::ng-deep {
+            .log-ok {
+                color: #81c784; // Green
+            }
 
-.form-row {
-    display: flex;
-    gap: 16px; // ホスト名とポート間のスペース
-    align-items: center;
-
-    // .form-row の直接の子である mat-form-field にスタイルを適用
-    >.host-field {
-        // 全体の幅から、隙間(16px)の幅を引き、その残りの 4/5 を幅として指定
-        width: calc((100% - 16px) * 0.8);
-    }
-
-    >.port-field {
-        // 全体の幅から、隙間(16px)の幅を引き、その残りの 1/5 を幅として指定
-        width: calc((100% - 16px) * 0.2);
-    }
-}
-
-// --- ログカード関連のスタイル ---
-
-.log-card .log-output {
-    background-color: #2e2e2e;
-    color: #e0e0e0;
-    padding: 16px;
-    border-radius: 4px;
-    min-height: 100px;
-    max-height: 70vh;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: 'Consolas', 'Courier New', monospace;
-
-    ::ng-deep {
-        .log-ok {
-            color: #81c784;
+            .log-ng {
+                color: #e57373; // Red
+            }
         }
+    }
+}
 
-        .log-ng {
-            color: #e57373;
-        }
-    } 
+mat-card-actions {
+    justify-content: flex-end;
 }

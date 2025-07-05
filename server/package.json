@@ -1,6 +1,6 @@
 {
   "name": "br-connection-checker",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "dist/main.js",
   "scripts": {
     "build:main": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --external:electron",

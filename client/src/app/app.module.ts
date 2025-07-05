@@ -12,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-
 // ルーティングとコンポーネント
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,13 +19,25 @@ import { HomeComponent } from './pages/home/home.component';
 import { CheckerComponent } from './pages/checker/checker.component';
 import { BackButtonComponent } from './shared/back-button/back-button.component';
 
+import { DasSvgComponent } from './pages/checker/svg-components/das-svg/das-svg.component';
+import { DsSvgComponent } from './pages/checker/svg-components/ds-svg/ds-svg.component';
+import { KappletsSvgComponent } from './pages/checker/svg-components/kapplets-svg/kapplets-svg.component';
+import { McSvgComponent } from './pages/checker/svg-components/mc-svg/mc-svg.component';
+import { RsSvgComponent } from './pages/checker/svg-components/rs-svg/rs-svg.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     CheckerComponent,
-    BackButtonComponent
+    BackButtonComponent,
+
+    DasSvgComponent,
+    DsSvgComponent,
+    KappletsSvgComponent,
+    McSvgComponent,
+    RsSvgComponent
   ],
   imports: [
     BrowserModule,
