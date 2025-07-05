@@ -2,8 +2,8 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as net from 'net'; // TCP接続確認用
-import * as ping from 'ping'; // Ping確認用
+import * as net from 'net';
+import { exec } from 'child_process';
 
 import { channels } from './shared-channels'; // (esbuildを使うのでこのままでOK)
 
@@ -53,23 +53,52 @@ function sendProgress(log: string) {
 async function checkPing(host: string): Promise<boolean> {
   sendProgress(`  ・${host} への Ping応答確認中…`);
   try {
-    const res = await ping.promise.probe(host, { timeout: 3 });
-    if (res.alive) {
-      sendProgress(`%%OK%%    [ OK ] ${host} からの応答がありました。`);
-      return true;
-    } else {
-      sendProgress(`%%NG%%    [ NG ] ${host} への要求がタイムアウトしました。 (Host: ${res.host})`);
-      return false;
-    }
-  } catch (error) {
-    sendProgress(`%%NG%%    [ NG ] ${host} へのPing実行中にエラーが発生しました。`);
-    return false;
+    // execのオプションにエンコーディングを指定する
+    const options = {
+      // Windowsの場合、'buffer'として受け取り、Shift_JISでデコードする
+      // それ以外のOSではデフォルトのまま
+      encoding: process.platform === 'win32' ? 'buffer' : 'utf8'
+    };
+
+    return new Promise((resolve) => {
+      // chcp 65001でUTF-8に変更してからpingを実行
+      const command = `chcp 65001 >nul && ping ${host}`;
+      exec(command, (error, stdout, stderr) => {
+        // stdoutはUTF-8になっている
+        const output = stdout + stderr; // エラー出力も結果に含める
+        sendProgress(`     pingコマンドの生出力:`);
+        output.split('\n').forEach(line => {
+          if (line.trim()) {
+            sendProgress(`      ${line.trim()}`);
+          }
+        });
+
+        // 成功判定は、pingの出力内容から判断する
+        // "Reply from" や "応答" といった文字列が含まれていれば成功とみなす
+        const isAlive = /Reply from|応答/.test(output);
+        const resolvedIpMatch = output.match(/\[(.*?)\]/); // IPアドレスを [ ] の中から抽出
+        const resolvedIp = resolvedIpMatch ? resolvedIpMatch[1] : 'N/A';
+
+        if (isAlive) {
+          sendProgress(`%%OK%%    [ OK ] ${host} (${resolvedIp}) からの応答がありました。\n`);
+          resolve(true);
+        } else {
+          sendProgress(`%%NG%%    [ NG ] ${host} への要求がタイムアウト、または失敗しました。\n`);
+          resolve(false);
+        }
+      });
+    });
+
+  } catch (error: any) {
+    sendProgress(`%%NG%%    [ NG ] pingコマンドの実行中にエラーが発生しました: ${error.message}\n`);
+    return Promise.resolve(false);
   }
 }
 
 // TCPポート疎通確認
 async function checkTcpPort(host: string, port: number): Promise<boolean> {
   sendProgress(`  ・${host}:${port} へのTCP接続確認中…`);
+
   return new Promise((resolve) => {
     const socket = new net.Socket();
     const timeout = 3000; // 3秒
@@ -77,19 +106,41 @@ async function checkTcpPort(host: string, port: number): Promise<boolean> {
     socket.setTimeout(timeout);
 
     socket.on('connect', () => {
-      sendProgress(`%%OK%%    [ OK ] ${host}:${port} への接続に成功しました。`);
+      // 成功時はシンプルにOK
+      sendProgress(`%%OK%%    [ OK ] ${host}:${port} への接続に成功しました。\n`);
       socket.destroy();
       resolve(true);
     });
 
     socket.on('timeout', () => {
-      sendProgress(`%%NG%%    [ NG ] ${host}:${port} への接続がタイムアウトしました。`);
+      // タイムアウトのエビデンス
+      sendProgress(`     接続試行がタイムアウトしました (3秒)。\n`);
+      sendProgress(`%%NG%%    [ NG ] 接続がタイムアウトしました。ファイアウォールまたはポートが閉じている可能性があります。\n`);
       socket.destroy();
       resolve(false);
     });
 
-    socket.on('error', (err) => {
-      sendProgress(`%%NG%%    [ NG ] ${host}:${port} への接続に失敗しました。 (${err.message})`);
+    socket.on('error', (err: NodeJS.ErrnoException) => { // 型を明示
+      // 接続エラーのエビデンス
+      sendProgress(`     エラーコード: ${err.code || 'N/A'}`);
+      
+      // エラーコードに基づいて、より分かりやすいメッセージを生成
+      let message = '';
+      switch (err.code) {
+        case 'ECONNREFUSED':
+          message = '接続がターゲットマシンによって拒否されました。(ポートでサービスが待ち受けていません)';
+          break;
+        case 'ENOTFOUND':
+          message = 'ホスト名が見つかりませんでした。(DNSの名前解決に失敗しました)';
+          break;
+        case 'EHOSTUNREACH':
+          message = 'ターゲットホストに到達できません。(ネットワーク経路の問題の可能性があります)';
+          break;
+        default:
+          message = `接続に失敗しました。(${err.message})`;
+          break;
+      }
+      sendProgress(`%%NG%%    [ NG ] ${message}\n`);
       socket.destroy();
       resolve(false);
     });
@@ -100,28 +151,54 @@ async function checkTcpPort(host: string, port: number): Promise<boolean> {
 
 // ローカルポートのリッスン確認
 async function checkLocalPort(port: number): Promise<boolean> {
-  sendProgress(`  ・ローカルポート ${port} のリッスン状況を確認中…`);
+  sendProgress(`  ・ローカルポート ${port} のリッスン状況を確認中 (netstat)…`);
+
   return new Promise((resolve) => {
-    const server = net.createServer();
-    server.once('error', (err: NodeJS.ErrnoException) => {
-      // 「アドレスは既に使用中です (EADDRINUSE)」「その操作を行う権限がありません (EACCES)」
-      // などのエラーコードが返ってきた場合は、ポートが使用中と判断する（＝自身が正しいポートで起動している。）
-      if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
-        sendProgress(`%%OK%%    [ OK ] ポート ${port} は使用中です。(何らかのサービスが起動しています)`);
+    // 実行するコマンド
+    const command = 'netstat -an -p TCP';
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        sendProgress(`%%NG%%    [ NG ] netstatコマンドの実行に失敗しました: ${error.message}\n`);
+        resolve(false);
+        return;
+      }
+      if (stderr) {
+        sendProgress(`%%NG%%    [ NG ] netstatコマンドがエラーを出力しました: ${stderr}\n`);
+        resolve(false);
+        return;
+      }
+
+      // 1. netstatの全出力から、指定ポートを含む行だけを抽出（findstrの再現）
+      const lines = stdout.split('\n');
+      const relevantLines = lines.filter(line => line.includes(`:${port}`));
+
+      // 2. エビデンスとして、抽出した行を出力
+      if (relevantLines.length > 0) {
+        sendProgress(`     関連するnetstatの出力:`);
+        // 各行の先頭にインデントを付けて見やすくする
+        relevantLines.forEach(line => sendProgress(`      ${line.trim()}`));
+      } else {
+        sendProgress(`     指定されたポートを含むエントリは見つかりませんでした。`);
+      }
+
+      // 3. 抽出した行の中に「LISTENING」状態のものが存在するかを判定
+      const isListening = relevantLines.some(line => /LISTENING/i.test(line));
+
+      // 4. 最終的な評価結果を出力
+      if (isListening) {
+        sendProgress(`%%OK%%    [ OK ] ポート ${port} はLISTENING状態です。\n`);
         resolve(true);
       } else {
-        sendProgress(`%%NG%%    [ NG ] ポート ${port} の確認中に予期せぬエラーが発生しました。 (${err.code})`);
+        if (relevantLines.length > 0) {
+          // ポートは使われているが、LISTENINGではない場合
+          sendProgress(`%%NG%%    [ NG ] ポート ${port} は使用中ですが、LISTENING状態ではありません。\n`);
+        } else {
+          // ポートが全く使われていない場合
+          sendProgress(`%%NG%%    [ NG ] ポート ${port} は使用されていません。\n`);
+        }
         resolve(false);
       }
     });
-    server.once('listening', () => {
-      server.close();
-      sendProgress(`%%NG%%    [ NG ] ポート ${port} は現在使用されていません。`);
-      resolve(false);
-    });
-    // ホスト名を省略することで、Node.jsが環境に応じてIPv4/IPv6を適切に判断してチェックする
-    // server.listen(port, '0.0.0.0');
-    server.listen(port);
   });
 }
 
