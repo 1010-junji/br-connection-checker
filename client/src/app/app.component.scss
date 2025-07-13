@@ -9,6 +9,7 @@
     top: 0;
     z-index: 1000; // 他の要素より手前に表示
     display: flex;
+    flex-shrink: 0; 
     align-items: center;
     gap: 8px; // アイコンとタイトルの間のスペース
 }

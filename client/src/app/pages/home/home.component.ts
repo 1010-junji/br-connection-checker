@@ -15,11 +15,11 @@ interface CheckMode {
 })
 export class HomeComponent implements OnInit {
   checkModes: CheckMode[] = [
-    { id: 'das', title: 'DAS', description: 'DAS端末からのアウトバウンド通信を確認します。', icon: 'dns' },
-    { id: 'ds', title: 'Design Studio (DS)', description: 'DS端末からのアウトバウンド通信を確認します。', icon: 'developer_board' },
-    { id: 'kapplets', title: 'Kapplets', description: 'Kappletsサーバーからのアウトバウンド通信を確認します。', icon: 'view_quilt' },
-    { id: 'mc', title: 'Management Console (MC)', description: 'MCサーバーからのアウトバウンド通信を確認します。', icon: 'settings_input_component' },
-    { id: 'rs', title: 'RoboServer (RS)', description: 'RoboServerからのアウトバウンド通信を確認します。', icon: 'memory' },
+    { id: 'das', title: 'DAS', description: 'DAS端末からのアウトバウンド通信を確認します。', icon: 'dvr' },
+    { id: 'ds', title: 'Design Studio (DS)', description: 'DS端末からのアウトバウンド通信を確認します。', icon: 'design_services' },
+    { id: 'kapplets', title: 'Kapplets', description: 'Kappletsサーバーからのアウトバウンド通信を確認します。', icon: 'app_settings_alt' },
+    { id: 'mc', title: 'Management Console (MC)', description: 'MCサーバーからのアウトバウンド通信を確認します。', icon: 'event_repeat' },
+    { id: 'rs', title: 'RoboServer (RS)', description: 'RoboServerからのアウトバウンド通信を確認します。', icon: 'dns' },
   ];
 
   constructor(private headerService: HeaderService) {} // <-- DI

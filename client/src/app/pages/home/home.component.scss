@@ -20,6 +20,6 @@
     font-size: 40px; // アイコン自体のサイズ
     height: 40px; // 要素の高さ
     width: 40px; // 要素の幅
-    line-height: 40px; // アイコンを垂直方向中央に
-    margin: 0 0 8px -8px; // 上右下左のマージンを調整 (左の欠けを修正)
+    margin: 0 0 8px 0px;
+    overflow: visible;
 }
