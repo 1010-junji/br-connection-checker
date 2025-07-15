@@ -126,15 +126,6 @@ export class CheckerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.mode = params['mode'];
       this.config = MODE_CONFIG[this.mode] || null;
 
-      // 同様に、状態の更新を非同期に実行する
-      setTimeout(() => {
-        if (this.config) {
-          // configから動的にタイトルを設定
-          this.headerService.setTitle(`${this.config.title} 疎通チェック`);
-          // Checker画面では戻るボタンを表示
-          this.headerService.setShowBackButton(true);
-        }
-      });
       this.reset();
     });
 

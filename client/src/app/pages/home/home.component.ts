@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderService } from 'src/app/shared/header.service';
 
 interface CheckMode {
   id: 'das' | 'ds' | 'kapplets' | 'mc' | 'rs';
@@ -22,15 +21,8 @@ export class HomeComponent implements OnInit {
     { id: 'rs', title: 'RoboServer (RS)', description: 'RoboServerからのアウトバウンド通信を確認します。', icon: 'dns' },
   ];
 
-  constructor(private headerService: HeaderService) {} // <-- DI
+  constructor() {} 
 
   ngOnInit(): void {
-    // 状態の更新を現在の変更検知サイクルの直後にスケジュールする
-    setTimeout(() => {
-      // このコンポーネントが表示されたらタイトルを設定
-      this.headerService.setTitle('コンポーネント間通信 疎通チェッカー');
-      // ホーム画面では戻るボタンは不要
-      this.headerService.setShowBackButton(false);
-    });
   }
 }
