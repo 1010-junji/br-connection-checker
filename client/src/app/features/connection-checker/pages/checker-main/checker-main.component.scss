@@ -12,6 +12,15 @@
     }
 }
 
+.selection-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+
+    .control-item {
+        flex: 1; // 幅を均等に分ける
+    }
+}
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

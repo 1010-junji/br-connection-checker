@@ -9,8 +9,25 @@ interface FormField {
   type: 'text' | 'number';
   class: 'host-field' | 'port-field' | 'full-width-field';
 }
-interface FieldRow { fields: FormField[]; }
-interface CheckTarget { title: string; fieldRows: FieldRow[]; }
+interface FieldRow {
+  fields: FormField[];
+}
+
+interface CheckTarget {
+  title: string;
+  fieldRows: FieldRow[];
+}
+
+interface ModeSelection {
+  id: string;
+  name: string;
+}
+
+interface IpFamilySelection {
+  value: 'any' | 4 | 6;
+  viewValue: string;
+}
+
 const MODE_CONFIG: { [key: string]: { title: string, checkTargets: CheckTarget[] } } = {
   das: {
     title: 'DAS', checkTargets: [
@@ -98,6 +115,14 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
     { id: 'mc', name: 'Management Console (MC)' },
     { id: 'rs', name: 'RoboServer (RS)' },
   ];
+
+  ipFamilies: IpFamilySelection[] = [
+    { value: 'any', viewValue: '両方 (OSに依存)' },
+    { value: 4, viewValue: 'IPv4のみ' },
+    { value: 6, viewValue: 'IPv6のみ' },
+  ];
+  selectedIpFamily: 'any' | 4 | 6 = 'any'; 
+
   selectedMode: string | null = null;
   config: { title: string, checkTargets: CheckTarget[] } | null = null;
   logOutput = '';
@@ -186,6 +211,7 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const params = this.getFormParams();
     params['title'] = this.config.title;
+    params['ipFamily'] = this.selectedIpFamily;
 
     try {
       await window.electronAPI.runCheck(this.selectedMode, params);
