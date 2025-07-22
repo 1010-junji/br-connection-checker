@@ -1,5 +1,14 @@
 export const channels = {
-    RUN_CHECK: 'run-check',       // Angular -> Electron (チェック実行)
-    CHECK_PROGRESS: 'check-progress', // Electron -> Angular (進捗出力)
-    SAVE_LOG: 'save-log',         // Angular -> Electron (ログ保存)
+    // 疎通チェッカー
+    RUN_CHECK: 'run-check',
+    CHECK_PROGRESS: 'check-progress',
+    SAVE_LOG: 'save-log',
+
+    // バックアップ編集機能
+    OPEN_FILE_DIALOG: 'open-file-dialog',
+    PROCESS_BACKUP_FILE: 'process-backup-file',
+    BACKUP_PROCESS_LOG: 'backup-process-log',
+
+    // ライセンス認証機能
+    OPEN_LICENSE_WINDOW: 'open-license-window',
 };

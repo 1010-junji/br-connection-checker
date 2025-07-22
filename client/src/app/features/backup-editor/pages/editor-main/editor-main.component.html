@@ -1,1 +1,58 @@
-<p>editor-main works!</p>
+<div class="editor-container">
+    <!-- 1. ファイル選択セクション -->
+    <mat-card>
+        <mat-card-header>
+            <mat-icon mat-card-avatar>archive</mat-icon>
+            <mat-card-title>1. バックアップファイル選択</mat-card-title>
+            <mat-card-subtitle>クラスター情報を切り替えるZIPファイルを選択します。</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="file-selection-content">
+            <button mat-stroked-button color="primary" (click)="selectFile()" [disabled]="isRunning">
+                <mat-icon>folder_open</mat-icon>
+                ファイルを選択...
+            </button>
+            <div *ngIf="selectedFilePath" class="selected-file-info">
+                <mat-icon class="file-icon">description</mat-icon>
+                <span>{{ fileName }}</span>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- 2. 実行セクション -->
+    <mat-card>
+        <mat-card-header>
+            <mat-icon mat-card-avatar>play_circle_filled</mat-icon>
+            <mat-card-title>2. 処理実行</mat-card-title>
+            <mat-card-subtitle>ファイル内のクラスター情報をトグルします。</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p>
+                <strong>処理内容:</strong><br>
+                - <strong>global.xml:</strong>
+                &lt;name&gt;と&lt;production&gt;の値を切り替えます。<br>
+                - <strong>project.xml:</strong>
+                &lt;name&gt;と&lt;forceServiceCluster&gt;の値を切り替えます。<br>
+            </p>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-raised-button color="primary" (click)="processFile()"
+                [disabled]="!selectedFilePath || isRunning">
+                処理を実行
+            </button>
+        </mat-card-actions>
+    </mat-card>
+
+    <!-- 3. 実行ログセクション -->
+    <mat-card *ngIf="logOutput.length > 0 || isRunning">
+        <mat-card-header>
+            <mat-icon mat-card-avatar>receipt_long</mat-icon>
+            <mat-card-title>3. 実行ログ</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="log-content">
+            <mat-progress-bar mode="indeterminate" *ngIf="isRunning"></mat-progress-bar>
+            <pre class="log-output">
+            <div *ngFor="let log of logOutput" [ngClass]="'log-' + log.type">{{ log.message }}</div>
+        </pre>
+        </mat-card-content>
+    </mat-card>
+</div>

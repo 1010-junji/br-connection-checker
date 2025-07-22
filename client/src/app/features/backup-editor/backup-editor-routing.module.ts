@@ -1,8 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BackupEditorComponent } from './backup-editor.component';
+import { EditorMainComponent } from './pages/editor-main/editor-main.component';
 
-const routes: Routes = [{ path: '', component: BackupEditorComponent }];
+const routes: Routes = [
+  {
+    path: '',
+    component: EditorMainComponent,
+    data: {
+      showBackButton: true
+    }
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

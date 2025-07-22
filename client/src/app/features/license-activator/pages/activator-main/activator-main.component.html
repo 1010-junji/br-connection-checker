@@ -1,1 +1,31 @@
-<p>activator-main works!</p>
+<div class="activator-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-icon mat-card-avatar>vpn_key</mat-icon>
+            <mat-card-title>ライセンスアクティベーター</mat-card-title>
+            <mat-card-subtitle>Management ConsoleのURLを指定してライセンス認証画面を開きます。</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content [formGroup]="form">
+            <p>
+                BizRobo! インストール直後など、動作要件を満たすブラウザがない環境でライセンス認証を行うための機能です。<br>
+                通常は <code>http://localhost:50080</code> などを指定します。
+            </p>
+            <mat-form-field class="url-input" appearance="outline">
+                <mat-label>MCのURL</mat-label>
+                <input matInput formControlName="url" placeholder="例: http://localhost:50080">
+                <mat-error *ngIf="urlControl?.hasError('required')">
+                    URLは必須です。
+                </mat-error>
+                <mat-error *ngIf="urlControl?.hasError('pattern')">
+                    有効なURL形式で入力してください (例: http://example.com)。
+                </mat-error>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-raised-button color="primary" [disabled]="form.invalid || isLoading" (click)="openWindow()">
+                <mat-icon>open_in_new</mat-icon>
+                ウィンドウで開く
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

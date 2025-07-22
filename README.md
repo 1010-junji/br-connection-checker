@@ -1,130 +1,165 @@
-# コンポーネント間通信 疎通チェッカー (Connection Checker)
+# BR! 統合メンテナンスツール (Integrated Maintenance Tool)
 
-このプロジェクトは、フロントエンドに Angular、バックエンドに Electron を使用した、サーバー/モジュール間の通信疎通確認ツールです。
-特定のノード間のネットワーク層（Ping）およびトランスポート層（TCP ポート）の接続性を、使いやすい GUI から迅速に確認することを目的としています。
+このプロジェクトは、BizRobo! の運用・メンテナンス作業を支援するために開発された、多機能デスクトップアプリケーションです。フロントエンドに **Angular 14**、バックエンドに **Electron** を採用しています。
 
-## 1. アーキテクチャと設計思想
+## ✨ 機能概要
 
-このプロジェクトは、開発の安定性とクロスプラットフォーム性を重視し、以下のアーキテクチャを採用しています。
+このアプリケーションは、以下の 3 つの主要機能を提供します。
 
-- **Angular on DevContainer:** フロントエンド(UI)は Docker コンテナ内で開発します。Node.js や Angular CLI のバージョン、VS Code 拡張機能が完全に統一され、誰の PC でも`npm install`だけで同じ開発環境を再現できます。
+1.  **疎通チェッカー (Connection Checker)**
 
-- **Electron on Host Machine:** Electron はホストマシン(あなたの PC)で直接実行します。これにより、OS 固有の GUI 機能を最大限に活用し、安定した動作を実現します。
+    - サーバー間のネットワーク層（Ping）およびトランスポート層（TCP ポート）の接続性を、GUI から迅速に確認できます。
+    - チェックモード（DAS, DS, MC など）を選択するだけで、必要な接続項目を自動でテストします。
+    - 実行結果は色分けされたログで表示され、ファイルへの保存も可能です。
 
-- **Node.js Native Networking:** 疎通確認のコアロジックは、**PowerShell などの外部スクリプトに依存せず、すべて Node.js の標準モジュール (`net`) と信頼性の高いライブラリ (`ping`) で実装**しています。この選択により、以下の大きなメリットを享受できます。
+2.  **バックアップ編集 (Backup Editor)**
 
-  - **管理者権限不要:** アプリケーションの実行に管理者権限（UAC 昇格）は必要ありません。
-  - **クロスプラットフォーム:** Windows 以外の OS でも動作するポータビリティを持ちます。
-  - **高い安定性と速度:** 外部プロセス起動のオーバーヘッドや、環境依存の文字コード問題、権限問題を完全に排除し、安定かつ高速に動作します。
+    - BizRobo! の ZIP 形式バックアップファイル内のクラスター情報（Production / Non Production）を、ワンクリックで切り替えることができます。
+    - `global.xml` および各 `project.xml` を自動で検索・編集し、新しい ZIP ファイルを生成します。
 
-- **Build with `esbuild`:** `server`サイドの TypeScript ビルドには、高速なバンドラ`esbuild`を採用しています。`import`構文を維持したまま、スクリプト間の依存関係をビルド時に解決し、実行時のパス問題を未然に防ぎます。
+3.  **ライセンス認証 (License Activator)**
+    - Management Console (MC) の動作要件を満たすブラウザがインストールされていない環境でも、ライセンス認証作業を補助します。
+    - 指定した MC の URL を、独立した新しいウィンドウで安全に開きます。
 
-## 2. 開発環境セットアップ
+## 🏛️ アーキテクチャと設計思想
 
-開発を始めるために、以下の手順を一度だけ実行してください。
+- **統合プラットフォーム:** 従来は個別のツールだった 3 つの機能を、単一の Electron アプリケーションに統合。統一された UI/UX を提供します。
+- **モダンな UI:** フロントエンドは **Angular 14** と **Angular Material** で構築。開閉式サイドメニューを持つ、直感的でモダンなレイアウトを採用しています。
+- **フィーチャーモジュールと遅延読み込み:** 各機能は Angular のフィーチャーモジュールとして独立しており、遅延読み込み（Lazy Loading）されます。これにより、アプリケーションの起動速度が最適化され、機能ごとの関心事が明確に分離されています。
+- **堅牢なバックエンド:** バックエンドのロジックは、機能ごとにモジュール化された TypeScript (`*.handler.ts`) で記述されており、メンテナンス性と拡張性に優れています。
+- **クロスプラットフォーム開発:**
+  - **Angular (UI):** 開発環境を `DevContainer` で Docker 化。Node.js や Angular CLI のバージョン、VS Code 拡張機能が統一され、誰でも同じ環境を再現できます。
+  - **Electron (Backend):** ホストマシン上で直接実行。OS ネイティブの機能（ダイアログ、ウィンドウ管理など）を最大限に活用します。
 
-### Step 0: 事前準備
+## 🚀 開発環境セットアップ
 
-お使いの PC（ホストマシン）に以下のソフトウェアがインストールされていることを確認してください。
+開発を始めるために、お使いの PC（ホストマシン）に以下のソフトウェアをインストールしてください。
 
-1.  **Git:** [公式サイト](https://git-scm.com/)からダウンロードしてインストール。
-2.  **Docker Desktop:** [公式サイト](https://www.docker.com/products/docker-desktop/)からダウンロードしてインストール。起動しておいてください。
-3.  **Visual Studio Code (VS Code):** [公式サイト](https://code.visualstudio.com/)からダウンロードしてインストール。
-4.  **VS Code 拡張機能 "Dev Containers":** `ms-vscode-remote.remote-containers` をインストール。
-5.  **Node.js (LTS 版):** [公式サイト](https://nodejs.org/ja)からダウンロードしてインストール。Electron をホストマシンで動かすために必要です。
+1.  **Git:** [公式サイト](https://git-scm.com/)
+2.  **Docker Desktop:** [公式サイト](https://www.docker.com/products/docker-desktop/) （起動しておく）
+3.  **Visual Studio Code (VS Code):** [公式サイト](https://code.visualstudio.com/)
+4.  **VS Code 拡張機能 "Dev Containers":** `ms-vscode-remote.remote-containers`
+5.  **Node.js (LTS 版):** [公式サイト](https://nodejs.org/ja) （Electron をホストマシンで動かすため）
 
-### Step 1: プロジェクトの取得と起動
+### **セットアップ手順**
 
-1.  このリポジトリをローカルマシンにクローンします。
+1.  **プロジェクトの取得と起動**
+
     ```bash
+    # リポジトリをクローン
     git clone <リポジトリのURL>
     cd <プロジェクトフォルダ名>
+
+    # VS Codeでプロジェクトを開く
+    code .
     ```
-2.  プロジェクトフォルダを VS Code で開きます (`code .`)。
-3.  右下に表示される**「Reopen in Container」**をクリックし、DevContainer をビルド・起動します。
 
-### Step 2: 依存パッケージのインストール
+    VS Code を開くと右下に表示される **「Reopen in Container」** をクリックし、DevContainer をビルド・起動します。
 
-環境のセットアップは、以下の 2 つのパートに分かれます。
+2.  **依存パッケージのインストール**
+    開発には **2 つのターミナル** が必要です。
 
-- **(A) Angular の依存関係 (DevContainer 内)**
-  VS Code に統合されているターミナル（`Ctrl + @`）を開き、以下のコマンドを実行します。
+    - **(A) Angular の依存関係 (DevContainer 内)**
+      VS Code に統合されているターミナル（`Ctrl + @` or `Ctrl + Shift + @`）を開き、実行します。
 
-  ```bash
-  # DevContainer内のターミナルで実行
-  cd /workspaces/client
-  npm install
-  ```
+      ```bash
+      # DevContainer内のターミナル
+      cd /workspaces/client
+      npm install
+      ```
 
-- **(B) Electron の依存関係 (ホストマシン上)**
-  **VS Code とは別に、お使いの PC のターミナル**（PowerShell, コマンドプロンプト等）を起動し、プロジェクトフォルダに移動して以下のコマンドを実行します。
-  ```bash
-  # ホストマシンのターミナルで実行
-  cd server
-  npm install
-  ```
+    - **(B) Electron の依存関係 (ホストマシン上)**
+      **VS Code とは別に、お使いの PC のターミナル**（PowerShell, コマンドプロンプト等）を起動し、プロジェクトフォルダに移動して実行します。
+      ```bash
+      # ホストマシンのターミナル
+      cd server
+      npm install
+      ```
 
-これで全てのセットアップは完了です！
+これでセットアップは完了です！
 
-## 3. 開発ワークフロー
+## 🛠️ 開発ワークフロー
 
-アプリケーションを起動し、開発を始めるための手順です。**2 つのターミナルを同時に使用します。**
+アプリケーションの起動と開発には、**2 つのターミナルを同時に使用します。**
 
-- **ターミナル 1 (DevContainer 内): Angular を起動**
+- **ターミナル 1 (DevContainer 内): Angular (UI) を起動**
   VS Code のターミナルで実行します。
 
   ```bash
+  # DevContainer内のターミナル
   cd /workspaces/client
   npm start
   ```
 
-  UI コード (`client`フォルダ内) を変更すると、Electron ウィンドウが自動でリロードされます。
+  `client` フォルダ内の UI 関連コードを変更すると、Electron ウィンドウが自動でリロードされます。
 
-- **ターミナル 2 (ホストマシン上): Electron を起動 & ウォッチ**
-  ホストマシンのターミナルで実行します。`watch`コマンドでファイルの変更を監視し、自動で再ビルドします。
+- **ターミナル 2 (ホストマシン上): Electron (Backend) を起動 & ウォッチ**
+  ホストマシンのターミナルで実行します。ファイルの変更を監視し、自動で再ビルド・再起動します。
   ```bash
+  # ホストマシンのターミナル
   cd server
+  # 以前は watch と start が別でしたが、npm-run-all と electron-watch で自動化できます
+  # (package.jsonの修正を推奨しますが、既存のままでも可)
+  # 既存のコマンドの場合:
+  # ターミナルを2つ使い、片方で npm run watch、もう片方で npm start
   npm run watch
   ```
-  この`watch`コマンドを実行した状態で、**別のホストマシンターミナル**を開き、以下を実行してアプリを起動します。
+  上記を実行した状態で、**別のホストマシンターミナル**を開き、以下を実行します。
   ```bash
+  # 別のホストマシンのターミナル
   cd server
   npm start
   ```
-  バックエンドのコード (`server`フォルダ内) を変更すると、`watch`が自動で再ビルドします。アプリを再起動 (`npm start`) すると変更が反映されます。
+  `server` フォルダ内のバックエンドコードを変更すると、`watch` が自動で再ビルドします。アプリを再起動 (`npm start`) すると変更が反映されます。
 
-## 4. プロジェクト構成
+## 📂 プロジェクト構成
 
 ```
 .
 ├── .devcontainer/  # DevContainer設定 (Angular開発環境)
-├── client/         # ★ フロントエンド (Angular)
+├── client/         # ■ フロントエンド (Angular)
 │   └── src/
-├── server/         # ★ バックエンド (Electron)
-│   └── src/
-│       ├── main.ts         # Electronメインプロセス (疎通確認ロジックを含む)
-│       ├── preload.ts      # フロントとバックの安全な橋渡し役
-│       └── shared-channels.ts # IPCチャンネル名の共有ファイル
-└── README.md       # (このファイル)
+│       ├── app/
+│       │   ├── features/               # ★ 各機能のフィーチャーモジュール
+│       │   │   ├── connection-checker/ # 疎通チェッカー機能
+│       │   │   ├── backup-editor/      # バックアップ編集機能
+│       │   │   └── license-activator/  # ライセンス認証機能
+│       │   ├── shared/                 # ★ 共通コンポーネント・サービス
+│       │   │   ├── components/
+│       │   │   │   └── layout/         # 全体のレイアウト
+│       │   │   └── services/
+│       │   │       └── layout.service.ts # レイアウトの状態管理
+│       │   ├── app-routing.module.ts
+│       │   └── app.module.ts
+│       └── typings.d.ts              # Electron APIの型定義
+└── server/         # ■ バックエンド (Electron)
+    └── src/
+        ├── features/                 # ★ 各機能のバックエンドロジック
+        │   ├── backup-editor.handler.ts
+        │   ├── connection-checker.handler.ts
+        │   └── license-activator.handler.ts
+        ├── main.ts                   # Electronメインプロセス (司令塔)
+        ├── preload.ts                # フロントとバックの安全な橋渡し役
+        └── shared-channels.ts        # IPCチャンネル名の共有ファイル
 ```
 
-**注意:** `server/scripts`フォルダは、Node.js ネイティブ実装への移行に伴い不要になりました。
+## 📦 本番ビルドとパッケージ化
 
-## 5. 本番ビルドとパッケージ化
-
-アプリケーションを配布可能な形式（`.exe`, `.dmg`など）にビルドする手順です。
+アプリケーションを配布可能な形式（`.exe`など）にビルドします。
 
 1.  **Angular アプリの本番ビルド (DevContainer 内)**
 
     ```bash
-    # DevContainer内のターミナルで実行
+    # DevContainer内のターミナル
     cd /workspaces/client
     npm run build
     ```
 
+    これにより、`client/dist/` に最適化されたフロントエンドファイルが生成されます。
+
 2.  **Electron アプリのパッケージ化 (ホストマシン上)**
     ```bash
-    # ホストマシンのターミナルで実行
+    # ホストマシンのターミナル
     cd server
     npm run package
     ```
