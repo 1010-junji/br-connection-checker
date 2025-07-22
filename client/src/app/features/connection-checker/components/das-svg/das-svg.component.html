@@ -1,0 +1,30 @@
+<svg viewBox="0 0 400 250" class="architecture-svg" preserveAspectRatio="xMidYMin meet">
+    <defs>
+        <marker id="arrowhead-das" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="arrow-head" />
+        </marker>
+    </defs>
+
+    <!-- DAS (Self) -->
+    <g class="self-text">
+        <rect x="50" y="45" width="150" height="90" class="shape self-fill" />
+        <text x="125" y="70" class="title-text">DAS</text>
+        <text x="65" y="95" class="param-label">ポート 1:</text>
+        <text x="120" y="95" class="param-value">{{ params['portNumber1'] || '?' }}</text>
+        <text x="65" y="115" class="param-label">ポート 2:</text>
+        <text x="120" y="115" class="param-value">{{ params['portNumber2'] || '?' }}</text>
+    </g>
+
+    <!-- MC Server -->
+    <g>
+        <rect x="230" y="75" width="150" height="90" class="shape mc-border" />
+        <text x="305" y="100" class="title-text">MCサーバー</text>
+        <text x="245" y="125" class="param-label">ホスト:</text>
+        <text x="290" y="125" class="param-value">{{ params['mchost'] || '?' }}</text>
+        <text x="245" y="145" class="param-label">ポート:</text>
+        <text x="290" y="145" class="param-value">{{ params['mcPort'] || '?' }}</text>
+    </g>
+
+    <!-- Connection Arrow (DAS -> MC) -->
+    <path d="M 200 105 H 220" class="arrow" marker-end="url(#arrowhead-das)" />
+</svg>

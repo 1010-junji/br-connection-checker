@@ -1,35 +1,47 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { CheckerComponent } from './pages/checker/checker.component';
-import { PageDataResolver } from './shared/page-data.resolver';
+import { LayoutComponent } from './shared/components/layout/layout.component';
+import { HomeComponent } from './features/home/home.component';
 
 const routes: Routes = [
-  // デフォルトパスはホーム画面へ
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  // ホーム画面
   {
-    path: 'home', component: HomeComponent,
-    resolve: { pageData: PageDataResolver },
-    data: {
-      title: 'コンポーネント間通信 疎通チェッカー',
-      showBackButton: false
-    }
+    path: '',
+    component: LayoutComponent,
+    children: [
+      // デフォルトはホーム画面へ
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      // ホーム画面
+      { 
+        path: 'home', 
+        component: HomeComponent,
+        data: { title: 'ホーム' }
+      },
+      // 疎通チェッカー機能（遅延読み込み）
+      {
+        path: 'connection-checker',
+        loadChildren: () => import('./features/connection-checker/connection-checker.module').then(m => m.ConnectionCheckerModule),
+        data: { title: '疎通チェッカー' }
+      },
+      // バックアップ編集機能（遅延読み込み）
+      {
+        path: 'backup-editor',
+        loadChildren: () => import('./features/backup-editor/backup-editor.module').then(m => m.BackupEditorModule),
+        data: { title: 'バックアップ編集' }
+      },
+      // ライセンス認証機能（遅延読み込み）
+      {
+        path: 'license-activator',
+        loadChildren: () => import('./features/license-activator/license-activator.module').then(m => m.LicenseActivatorModule),
+        data: { title: 'ライセンス認証' }
+      },
+    ]
   },
-  // チェック実行画面 (例: /check/das のようにモードをパラメータで受け取る)
-  {
-    path: 'check/:mode', component: CheckerComponent,
-    resolve: { pageData: PageDataResolver },
-    data: {
-      // タイトルはResolverが:modeから動的に生成するので、ここでは空でよい
-      // showBackButtonは固定でtrue
-      showBackButton: true
-    }
-  },
+  // 上記以外のパスはホームにリダイレクト
+  { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })], // useHash: true はElectronで推奨
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

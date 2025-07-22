@@ -1,0 +1,20 @@
+<div class="home-container">
+    <div class="header">
+        <h1 class="title">BR! 統合メンテナンスツール</h1>
+        <p class="subtitle">各種メンテナンス作業をこのアプリケーションから実行できます。</p>
+    </div>
+
+    <div class="card-container">
+        <mat-card *ngFor="let card of featureCards" class="feature-card" (click)="navigateTo(card.route)">
+            <mat-card-header>
+                <div mat-card-avatar class="card-avatar" [style.background-color]="card.color">
+                    <mat-icon>{{ card.icon }}</mat-icon>
+                </div>
+                <mat-card-title>{{ card.title }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>{{ card.description }}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

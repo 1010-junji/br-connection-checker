@@ -1,25 +1,2 @@
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.sticky-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000; // 他の要素より手前に表示
-    display: flex;
-    flex-shrink: 0; 
-    align-items: center;
-    gap: 8px; // アイコンとタイトルの間のスペース
-}
-
-.toolbar-icon {
-    // ホーム画面のアイコン用
-}
-
-.content {
-    flex-grow: 1; // 残りの高さをすべて使う
-    overflow-y: auto; // コンテンツがはみ出たらスクロール
-    padding: 24px;
-}
+// このファイルは通常空のままでOKです。
+// コンポーネント固有のスタイルは、各コンポーネントのSCSSファイルに記述します。
