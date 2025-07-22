@@ -1,15 +1,24 @@
 <div class="activator-container">
     <mat-card>
         <mat-card-header>
-            <mat-icon mat-card-avatar>vpn_key</mat-icon>
-            <mat-card-title>ライセンスアクティベーター</mat-card-title>
-            <mat-card-subtitle>Management ConsoleのURLを指定してライセンス認証画面を開きます。</mat-card-subtitle>
+            <mat-icon mat-card-avatar fontSet="material-icons-two-tone">vpn_key</mat-icon>
+            <mat-card-title>ライセンス認証用組み込みブラウザー</mat-card-title>
+            <mat-card-subtitle>Management Consoleを開いてBizRobo!のライセンスを登録します。</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content [formGroup]="form">
-            <p>
+        <form [formGroup]="form" (ngSubmit)="openWindow()">
+            <p class="lead-section">
                 BizRobo! インストール直後など、動作要件を満たすブラウザがない環境でライセンス認証を行うための機能です。<br>
                 通常は <code>http://localhost:50080</code> などを指定します。
             </p>
+
+            <div class="privacy-note">
+                <mat-icon mat-card-avatar>security</mat-icon>
+                <span>
+                    新しいウィンドウはプライベートモードで開かれます。Cookieやキャッシュ、入力履歴はウィンドウを閉じると自動的に消去されます。
+                    また、Windows統合認証の自動ログインも無効化されているため、ウィンドウを開くたびにログイン画面が表示されます。
+                </span>
+            </div>
+
             <mat-form-field class="url-input" appearance="outline">
                 <mat-label>MCのURL</mat-label>
                 <input matInput formControlName="url" placeholder="例: http://localhost:50080">
@@ -20,12 +29,12 @@
                     有効なURL形式で入力してください (例: http://example.com)。
                 </mat-error>
             </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions align="end">
-            <button mat-raised-button color="primary" [disabled]="form.invalid || isLoading" (click)="openWindow()">
-                <mat-icon>open_in_new</mat-icon>
-                ウィンドウで開く
-            </button>
-        </mat-card-actions>
+            <mat-card-actions align="end">
+                <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || isLoading">
+                    <mat-icon>open_in_new</mat-icon>
+                    ウィンドウで開く
+                </button>
+            </mat-card-actions>
+        </form>
     </mat-card>
 </div>

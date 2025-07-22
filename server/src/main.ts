@@ -1,5 +1,3 @@
-// server/src/main.ts
-
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 
@@ -48,6 +46,34 @@ function createWindow(): void {
 // ===================================================================
 // アプリケーションライフサイクル
 // ===================================================================
+// このイベントは、appがreadyになった後、ウィンドウが作られる前に設定するのが確実
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+  // 証明書エラーを許可するかどうかのロジック
+  const parsedUrl = new URL(url);
+  // localhostまたは127.0.0.1からの接続であれば、証明書エラーを無視して接続を許可する
+  if (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') {
+    console.log(`[Certificate Error] Ignoring error for local domain: ${url}`);
+    event.preventDefault(); // Electronのデフォルトの動作（接続拒否）をキャンセル
+    callback(true); // 接続を許可
+  } else {
+    console.warn(`[Certificate Error] Blocking connection to untrusted domain: ${url}`);
+    callback(false); // 接続を拒否 (デフォルトの動作)
+  }
+});
+
+// Windows統合認証の自動ログインを無効化する 
+app.on('login', (event, webContents, details, authInfo, callback) => {
+  // 'login' イベントは、NTLM認証やBasic認証などのプロンプトが表示される前に発生する。
+  // ここでイベントのデフォルトの動作をキャンセルすることで、
+  // OSによる自動認証や認証ダイアログの表示を防ぐ。
+  event.preventDefault();
+  
+  console.log(`[Login Request] Canceled automatic login for: ${details.url}`);
+  // コールバックを引数なしで呼び出すか、明示的にキャンセルするために
+  // callback(undefined, undefined) のように呼び出すことで、認証プロセスを終了させる。
+  // これにより、サーバーは通常、認証失敗時のページ（多くはログインフォーム）を返す。
+});
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {

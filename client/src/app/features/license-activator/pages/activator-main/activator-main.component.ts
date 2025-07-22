@@ -1,6 +1,4 @@
-// client/src/app/features/license-activator/pages/activator-main/activator-main.component.ts
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,6 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ActivatorMainComponent implements OnInit {
   form: UntypedFormGroup;
   isLoading = false;
+
+  private errorListenerCleaner: (() => void) | null = null;
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -26,7 +26,20 @@ export class ActivatorMainComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (window.electronAPI?.onLicenseWindowError) {
+      this.errorListenerCleaner = window.electronAPI.onLicenseWindowError((event, errorInfo) => {
+        this.snackBar.open(`エラー: ${errorInfo.error}`, '閉じる', {
+          duration: 7000,
+          panelClass: ['mat-toolbar', 'mat-warn'] // エラーが目立つようにスタイルを適用
+        });
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.errorListenerCleaner?.();
+  }
 
   async openWindow(): Promise<void> {
     if (this.form.invalid || !window.electronAPI) {

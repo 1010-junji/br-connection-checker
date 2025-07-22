@@ -20,4 +20,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // --- 追加: ライセンス認証機能 ---
   openLicenseWindow: (url: string) => ipcRenderer.invoke(channels.OPEN_LICENSE_WINDOW, url),
+  onLicenseWindowError: (callback: (event: IpcRendererEvent, errorInfo: { url: string; error: string; }) => void) => {
+    ipcRenderer.on(channels.LICENSE_WINDOW_ERROR, callback);
+    return () => ipcRenderer.removeAllListeners(channels.LICENSE_WINDOW_ERROR);
+  },
 });

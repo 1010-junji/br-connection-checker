@@ -8,7 +8,7 @@
         <mat-card *ngFor="let card of featureCards" class="feature-card" (click)="navigateTo(card.route)">
             <mat-card-header>
                 <div mat-card-avatar class="card-avatar" [style.background-color]="card.color">
-                    <mat-icon>{{ card.icon }}</mat-icon>
+                    <mat-icon fontSet="material-icons-two-tone">{{ card.icon }}</mat-icon>
                 </div>
                 <mat-card-title>{{ card.title }}</mat-card-title>
             </mat-card-header>

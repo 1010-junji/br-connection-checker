@@ -11,4 +11,5 @@ export const channels = {
 
     // ライセンス認証機能
     OPEN_LICENSE_WINDOW: 'open-license-window',
+    LICENSE_WINDOW_ERROR: 'license-window-error',
 };

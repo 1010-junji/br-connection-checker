@@ -22,21 +22,21 @@ export class HomeComponent implements OnInit {
       description: 'サーバー間のネットワーク・ポート接続をGUIから確認します。',
       icon: 'power',
       route: '/connection-checker',
-      color: '#388E3C' // Green
+      color: '#e8f5e9'
     },
     {
       title: 'バックアップ編集',
       description: 'ZIP形式のバックアップファイル内のクラスター情報を編集します。',
       icon: 'dynamic_form',
       route: '/backup-editor',
-      color: '#1976D2' // Blue
+      color: '#e8f5e9'
     },
     {
       title: 'ライセンス認証',
-      description: '指定したURLを新しいウィンドウで開き、ライセンス認証を補助します。',
+      description: 'Management Consoleを開いてBizRobo!のライセンスを登録します。',
       icon: 'vpn_key',
       route: '/license-activator',
-      color: '#F57C00' // Orange
+      color: '#e8f5e9'
     }
   ];
 

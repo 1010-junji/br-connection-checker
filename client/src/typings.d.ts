@@ -29,6 +29,7 @@ export interface IElectronAPI {
 
   // --- 追加: ライセンス認証機能 ---
   openLicenseWindow: (url: string) => Promise<OpenWindowResult>;
+  onLicenseWindowError: (callback: (event: IpcRendererEvent, errorInfo: { url: string; error: string; }) => void) => () => void;
 }
 
 declare global {
