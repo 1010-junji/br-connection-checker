@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "connection-checker-app": {
+    "setup-toolkit-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/connection-checker-app",
+            "outputPath": "dist/setup-toolkit-app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "connection-checker-app:build:production"
+              "browserTarget": "setup-toolkit-app:build:production"
             },
             "development": {
-              "browserTarget": "connection-checker-app:build:development"
+              "browserTarget": "setup-toolkit-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "connection-checker-app:build"
+            "browserTarget": "setup-toolkit-app:build"
           }
         },
         "test": {

@@ -1,6 +1,6 @@
 {
-  "name": "br-connection-checker",
-  "version": "0.2.2",
+  "name": "br-setup-toolkit",
+  "version": "0.3.0",
   "main": "dist/main.js",
   "scripts": {
     "build:main": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --external:electron",
@@ -17,7 +17,7 @@
   ],
   "author": "JO",
   "license": "MIT",
-  "description": "BizRobo! の構成に従い、コンポーネント間の接続を確認するためのアプリケーションです。",
+  "description": "BizRobo! の運用環境のセットアップをスムーズに進めるための各種便利ツールの詰め合わせ",
   "engines": {
     "node": "^20.18.1"
   },
@@ -38,8 +38,8 @@
     "xmldom": "^0.6.0"
   },
   "build": {
-    "appId": "com.bizrobo.opekai.br-connection-checker",
-    "productName": "BR Connection Checker",
+    "appId": "com.bizrobo.opekai.br-setup-toolkit",
+    "productName": "BR Setup Toolkit",
     "win": {
       "icon": "assets/icon.ico",
       "target": [
@@ -55,7 +55,7 @@
     },
     "extraResources": [
       {
-        "from": "../client/dist/connection-checker-app",
+        "from": "../client/dist/setup-toolkit-app",
         "to": "app",
         "filter": [
           "**/*"
