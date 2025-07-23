@@ -8,9 +8,6 @@ const routes: Routes = [
   {
     path: '',
     component: ActivatorMainComponent,
-    data: {
-      showBackButton: true
-    }
   }
 ];
 

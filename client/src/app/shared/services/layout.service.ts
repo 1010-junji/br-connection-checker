@@ -1,10 +1,9 @@
-import { Injectable, TemplateRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 export interface PageHeader {
   title: string;
-  showBackButton: boolean;
 }
 
 @Injectable({
@@ -16,7 +15,7 @@ export class LayoutService {
   isSidenavOpen$ = this._isSidenavOpen$.asObservable();
 
   // ページヘッダーの状態
-  private _pageHeaderState$ = new BehaviorSubject<PageHeader>({ title: '', showBackButton: false });
+  private _pageHeaderState$ = new BehaviorSubject<PageHeader>({ title: '' });
   pageHeaderState$ = this._pageHeaderState$.asObservable().pipe(distinctUntilChanged());
 
   // メインコンテンツエリアのスクロールリクエスト

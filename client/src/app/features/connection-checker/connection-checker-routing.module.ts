@@ -6,10 +6,6 @@ const routes: Routes = [
   { 
     path: '', 
     component: CheckerMainComponent,
-    // この機能は戻るボタンを表示する
-    data: {
-      showBackButton: true 
-    }
   }
 ];
 

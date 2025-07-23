@@ -1,44 +1,32 @@
-<mat-sidenav-container class="sidenav-container">
+<div class="app-wrapper">
 
-    <!-- サイドナビゲーション -->
-    <mat-sidenav #sidenav class="sidenav" [mode]="'side'" [opened]="isSidenavOpen$ | async"
-        (closed)="onSidenavClosed()">
+    <!-- メインツールバー (変更なし) -->
+    <mat-toolbar color="primary" class="main-toolbar">
+        <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle sidenav">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span class="toolbar-title">{{ pageHeader.title }}</span>
+    </mat-toolbar>
 
-        <mat-toolbar class="sidenav-toolbar">
-            <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle sidenav">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <span *ngIf="isSidenavOpen$ | async" class="sidenav-toolbar-title">メニュー</span>
-        </mat-toolbar>
+    <mat-sidenav-container class="sidenav-container">
 
-        <mat-nav-list>
-            <a mat-list-item *ngFor="let item of navItems" [routerLink]="item.link" routerLinkActive="active-list-item"
-                [matTooltip]="(isSidenavOpen$ | async) ? '' : item.name" matTooltipPosition="right">
-                <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
-                <span *ngIf="isSidenavOpen$ | async" mat-line>{{ item.name }}</span>
-            </a>
-        </mat-nav-list>
+        <!-- サイドナビゲーション -->
+        <mat-sidenav #sidenav class="sidenav" [mode]="'side'" (closed)="onSidenavClosed()">
 
-    </mat-sidenav>
+            <mat-nav-list>
+                <a mat-list-item *ngFor="let item of navItems" [routerLink]="item.link"
+                    routerLinkActive="active-list-item" [matTooltip]="item.name" matTooltipPosition="right">
+                    <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
+                </a>
+            </mat-nav-list>
+        </mat-sidenav>
 
-    <!-- メインコンテンツ -->
-    <mat-sidenav-content class="sidenav-content">
+        <!-- メインコンテンツ (変更なし) -->
+        <mat-sidenav-content class="sidenav-content">
+            <main #scrollableContent class="content">
+                <router-outlet></router-outlet>
+            </main>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
 
-        <!-- 上部ツールバー -->
-        <mat-toolbar color="primary" class="main-toolbar">
-            <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle sidenav" class="hamburger-menu">
-                <mat-icon>menu</mat-icon>
-            </button>
-
-            <app-back-button *ngIf="(pageHeaderState$ | async)?.showBackButton"></app-back-button>
-
-            <span class="toolbar-title">{{ (pageHeaderState$ | async)?.title }}</span>
-        </mat-toolbar>
-
-        <!-- ページコンテンツ表示エリア -->
-        <main #scrollableContent class="content">
-            <router-outlet></router-outlet>
-        </main>
-
-    </mat-sidenav-content>
-</mat-sidenav-container>
+</div>

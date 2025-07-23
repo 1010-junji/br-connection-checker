@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   featureCards: FeatureCard[] = [
     {
       title: '疎通チェッカー',
-      description: 'サーバー間のネットワーク・ポート接続をGUIから確認します。',
+      description: 'コンポーネント間のネットワーク・ポート接続を確認します。',
       icon: 'power',
       route: '/connection-checker',
       color: '#e8f5e9'

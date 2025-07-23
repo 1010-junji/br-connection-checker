@@ -18,7 +18,6 @@ import { AppComponent } from './app.component';
 
 // --- Shared Components ---
 import { LayoutComponent } from './shared/components/layout/layout.component';
-import { BackButtonComponent } from './shared/components/back-button/back-button.component';
 
 // --- Feature Components ---
 import { HomeComponent } from './features/home/home.component';
@@ -28,8 +27,7 @@ import { HomeComponent } from './features/home/home.component';
   declarations: [
     AppComponent,
     LayoutComponent,
-    HomeComponent,
-    BackButtonComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

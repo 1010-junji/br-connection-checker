@@ -6,9 +6,6 @@ const routes: Routes = [
   {
     path: '',
     component: EditorMainComponent,
-    data: {
-      showBackButton: true
-    }
   }
 ];
 
