@@ -209,31 +209,43 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   async runCheck(): Promise<void> {
-    if (!this.config || !this.selectedMode || !window.electronAPI) return;
+    if (this.isRunning || !window.electronAPI) return;
+
+    // FWチェックが「する」になっていて、コンポーネントが未選択の場合
+    if (this.doPortScan === 'yes' && !this.config) {
+      alert('「自端末のFWチェック」を「する」に設定した場合、チェック対象のポート番号をフォームから自動検出するために「発信するコンポーネント」を選択してください。');
+      return;
+    }
+
+    // コンポーネント間チェックのみで、コンポーネントが未選択の場合
+    if (this.doPortScan === 'no' && !this.config) {
+      // ボタンが無効になっているはずなので通常ここには来ないが、念のため
+      alert('「発信するコンポーネント」を選択してください。');
+      return;
+    }
 
     this.isRunning = true;
-    this.logOutput = `--- ${this.config.title} のチェックを開始します ---\n\n`;
-    
+    this.logOutput = '';
+
     const params = this.getFormParams();
-    params['title'] = this.config.title;
+    params['title'] = this.config?.title || '';
     params['ipFamily'] = this.selectedIpFamily;
     params['doPortScan'] = this.doPortScan;
-    
+
     if (this.doPortScan === 'no') {
-        this.logOutput = `--- ${this.config?.title} のチェックを開始します ---\n\n`;
+      this.logOutput = `--- ${this.config?.title} のチェックを開始します ---\n\n`;
     }
 
     try {
-      await window.electronAPI.runCheck(this.selectedMode, params);
+      await window.electronAPI.runCheck(this.selectedMode!, params); // selectedModeがnullでないことは上のガードで保証
     } catch (error) {
-        console.error('Error during runCheck:', error);
-        this.logOutput += `\n%%NG%%[FATAL] チェック実行中に予期せぬエラーが発生しました: ${error}\n`;
+      console.error('Error during runCheck:', error);
+      this.logOutput += `\n%%NG%%[FATAL] チェック実行中に予期せぬエラーが発生しました: ${error}\n`;
     } finally {
-        this.zone.run(() => {
-          this.isRunning = false;
-          // 新しいサービス経由でスクロールをリクエスト
-          this.layoutService.requestScrollToBottom();
-        });
+      this.zone.run(() => {
+        this.isRunning = false;
+        this.layoutService.requestScrollToBottom();
+      });
     }
   }
 

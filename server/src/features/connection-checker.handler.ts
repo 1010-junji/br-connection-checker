@@ -237,31 +237,40 @@ async function checkInboundPort(win: BrowserWindow | null, port: number): Promis
 
 // ポートスキャン実行のメイン関数
 async function runPortScan(win: BrowserWindow | null, params: any) {
-    sendProgress(win, `------------------------------------------------`);
-    sendProgress(win, `-- 自端末のファイアウォールチェックを開始します --`);
-    sendProgress(win, `------------------------------------------------`);
+  sendProgress(win, `------------------------------------------------`);
+  sendProgress(win, `-- 自端末のファイアウォールチェックを開始します --`);
+  sendProgress(win, `------------------------------------------------`);
 
-    // チェック対象の全ポートをリストアップ
-    const portsToCheck = new Set<number>();
-    Object.values(params).forEach(value => {
-        const port = Number(value);
-        if (!isNaN(port) && port > 0 && port < 65536) {
-            portsToCheck.add(port);
-        }
-    });
-
-    if (portsToCheck.size === 0) {
-        sendProgress(win, 'チェック対象の有効なポート番号が入力されていません。');
-        return;
+  // チェック対象の全ポートをリストアップ
+  const portsToCheck = new Set<number>();
+  // 無視するキーのリストを定義
+  const ignoreKeys = ['title', 'ipFamily', 'doPortScan'];
+  
+  Object.keys(params).forEach(key => {
+    // ignoreKeysに含まれるキーや、末尾が 'host' で終わるキーは無視する
+    if (ignoreKeys.includes(key) || key.endsWith('host')) {
+      return; // スキップ
     }
-    
-    sendProgress(win, `チェック対象ポート: [${Array.from(portsToCheck).join(', ')}]`);
 
-    for (const port of Array.from(portsToCheck).sort((a,b) => a-b)) {
-        await checkInboundPort(win, port);
-        await checkOutboundPort(win, port);
-        sendProgress(win, ''); // 空行
+    // 値を数値に変換し、有効なポート番号かチェック
+    const port = Number(params[key]);
+    if (!isNaN(port) && port > 0 && port < 65536) {
+      portsToCheck.add(port);
     }
+  });
+
+  if (portsToCheck.size === 0) {
+      sendProgress(win, 'チェック対象の有効なポート番号が入力されていません。');
+      return;
+  }
+  
+  sendProgress(win, `チェック対象ポート: [${Array.from(portsToCheck).join(', ')}]`);
+
+  for (const port of Array.from(portsToCheck).sort((a,b) => a-b)) {
+      await checkInboundPort(win, port);
+      await checkOutboundPort(win, port);
+      sendProgress(win, ''); // 空行
+  }
 }
 
 // --- IPCハンドラの登録 ---
