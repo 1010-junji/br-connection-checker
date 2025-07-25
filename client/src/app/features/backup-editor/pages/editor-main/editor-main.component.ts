@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ProcessBackupResult } from 'src/typings.d';
+import { LayoutService } from 'src/app/shared/services/layout.service';
 
 @Component({
   selector: 'app-editor-main',
@@ -13,7 +14,11 @@ export class EditorMainComponent implements OnInit, OnDestroy {
   
   private logListenerCleaner: (() => void) | null = null;
 
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone,
+    private layoutService: LayoutService
+  ) { }
 
   ngOnInit(): void {
     this.addLog('info', '処理するZIP形式のバックアップファイルを選択してください。');
@@ -56,10 +61,20 @@ export class EditorMainComponent implements OnInit, OnDestroy {
     this.isRunning = true;
     this.logOutput = []; // ログをリセット
 
-    const result: ProcessBackupResult = await window.electronAPI.processBackupFile(this.selectedFilePath);
-
-    this.isRunning = false;
-    this.cdr.detectChanges();
+try {
+        await window.electronAPI.processBackupFile(this.selectedFilePath);
+    } catch (error) {
+        // エラーログは onBackupProcessLog で捕捉されるため、ここでは何もしない
+        console.error("Backup processing failed", error);
+    } finally {
+        this.isRunning = false;
+        // 処理完了後にスクロールを要求
+        this.zone.run(() => {
+            this.cdr.detectChanges(); // UIの更新を確実にする
+            // 少し遅延させてからスクロールを要求すると、より確実
+            setTimeout(() => this.layoutService.requestScrollToBottom(), 100);
+        });
+    }
   }
 
   private addLog(type: 'info' | 'error' | 'success', message: string): void {
