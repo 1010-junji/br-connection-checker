@@ -23,9 +23,11 @@ function createWindow(): void {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    autoHideMenuBar: true
+    // autoHideMenuBar: true
   });
 
+  mainWindow.setMenu(null);
+  
   if (isDev) {
     mainWindow.loadURL('http://localhost:4200');
     mainWindow.webContents.openDevTools();
