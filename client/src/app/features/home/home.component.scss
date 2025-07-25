@@ -17,9 +17,15 @@
     }
 
     .subtitle {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: mat.get-color-from-palette(mat.$grey-palette, 600);
-        margin: 0;
+        margin: 0.5rem 0 0 0;
+    }
+}
+
+.mat-card-header {
+    .mat-card-subtitle {
+        margin: 0.5rem 0 0 0;
     }
 }
 

@@ -1,10 +1,16 @@
 <div class="checker-container">
     <!-- モード選択カード -->
     <mat-card class="mode-selection-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar fontSet="material-icons-two-tone">power</mat-icon>
+            <mat-card-title>コンポーネント間疎通チェッカー</mat-card-title>
+            <mat-card-subtitle>コンポーネント間のネットワーク・ポート接続を確認します。</mat-card-subtitle>
+        </mat-card-header>
+
         <mat-card-content class="selection-controls">
             <!-- チェックモード選択 -->
             <mat-form-field appearance="outline" class="control-item">
-                <mat-label>チェックするコンポーネント</mat-label>
+                <mat-label>発信するコンポーネント</mat-label>
                 <mat-select [value]="selectedMode" (selectionChange)="onModeChange($event.value)" [disabled]="isRunning">
                     <mat-option *ngFor="let mode of modes" [value]="mode.id">
                         {{ mode.name }}
@@ -13,7 +19,7 @@
             </mat-form-field>
     
             <mat-form-field appearance="outline" class="control-item">
-                <mat-label>IPバージョン</mat-label>
+                <mat-label>利用するIPバージョン</mat-label>
                 <mat-select [(ngModel)]="selectedIpFamily" [disabled]="isRunning">
                     <mat-option *ngFor="let family of ipFamilies" [value]="family.value">
                         {{ family.viewValue }}

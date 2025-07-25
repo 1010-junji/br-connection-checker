@@ -1,11 +1,11 @@
 <div class="activator-container">
-    <mat-card>
-        <mat-card-header>
-            <mat-icon mat-card-avatar fontSet="material-icons-two-tone">vpn_key</mat-icon>
-            <mat-card-title>ライセンス認証用組み込みブラウザー</mat-card-title>
-            <mat-card-subtitle>Management Consoleを開いてBizRobo!のライセンスを登録します。</mat-card-subtitle>
-        </mat-card-header>
-        <form [formGroup]="form" (ngSubmit)="openWindow()">
+    <form [formGroup]="form" (ngSubmit)="openWindow()">
+        <mat-card>
+            <mat-card-header>
+                <mat-icon mat-card-avatar fontSet="material-icons-two-tone">vpn_key</mat-icon>
+                <mat-card-title>ライセンス認証用組み込みブラウザー</mat-card-title>
+                <mat-card-subtitle>Management Consoleを開いてBizRobo!のライセンスを登録します。</mat-card-subtitle>
+            </mat-card-header>
             <p class="lead-section">
                 BizRobo! インストール直後など、動作要件を満たすブラウザがない環境でライセンス認証を行うための機能です。<br>
                 通常は <code>http://localhost:50080</code> などを指定します。
@@ -35,6 +35,6 @@
                     ウィンドウで開く
                 </button>
             </mat-card-actions>
-        </form>
-    </mat-card>
+        </mat-card>
+    </form>
 </div>

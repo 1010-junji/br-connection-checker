@@ -32,8 +32,8 @@ const MODE_CONFIG: { [key: string]: { title: string, checkTargets: CheckTarget[]
   das: {
     title: 'DAS', checkTargets: [
       { title: '自端末: DAS', fieldRows: [
-          { fields: [{ key: 'portNumber1', label: 'DASのポート1 (例: 49998)', value: '49998', type: 'number', class: 'full-width-field' }] },
-          { fields: [{ key: 'portNumber2', label: 'DASのポート2 (例: 49999)', value: '49999', type: 'number', class: 'full-width-field' }] },
+          { fields: [{ key: 'portNumber1', label: 'DASのコマンド ポート', value: '49998', type: 'number', class: 'full-width-field' }] },
+          { fields: [{ key: 'portNumber2', label: 'DASのストリーム ポート', value: '49999', type: 'number', class: 'full-width-field' }] },
       ]},
       { title: '接続先: MCサーバー', fieldRows: [
           { fields: [
@@ -53,8 +53,8 @@ const MODE_CONFIG: { [key: string]: { title: string, checkTargets: CheckTarget[]
       ]},
       { title: '接続先: DAS端末', fieldRows: [
         { fields: [{ key: 'dashost', label: 'DASのホスト名/IP', value: 'localhost', type: 'text', class: 'full-width-field' }] },
-        { fields: [{ key: 'portNumber1', label: 'DASのポート1', value: '49998', type: 'number', class: 'full-width-field' }] },
-        { fields: [{ key: 'portNumber2', label: 'DASのポート2', value: '49999', type: 'number', class: 'full-width-field' }] },
+        { fields: [{ key: 'portNumber1', label: 'DASのコマンド ポート', value: '49998', type: 'number', class: 'full-width-field' }] },
+        { fields: [{ key: 'portNumber2', label: 'DASのストリーム ポート', value: '49999', type: 'number', class: 'full-width-field' }] },
       ]},
     ]
   },
@@ -90,7 +90,7 @@ const MODE_CONFIG: { [key: string]: { title: string, checkTargets: CheckTarget[]
         { title: '接続先: DBサーバー', fieldRows: [{ fields: [{ key: 'dbhost', label: 'DBのホスト名/IP', value: 'mysql-service', type: 'text', class: 'host-field' },{ key: 'dbport', label: 'DBポート', value: '3306', type: 'number', class: 'port-field' },]}]},
         { title: '接続先: MCサーバー', fieldRows: [{ fields: [{ key: 'mchost', label: 'MCのホスト名/IP', value: 'localhost', type: 'text', class: 'host-field' },{ key: 'mcport', label: 'MCポート', value: '8080', type: 'number', class: 'port-field' },]}]},
         { title: '自端末: RoboServer', fieldRows: [{ fields: [{ key: 'rsport', label: 'RoboServerのポート', value: '50000', type: 'number', class: 'full-width-field' }]}]},
-        { title: '接続先: DAS端末', fieldRows: [{ fields: [{ key: 'dashost', label: 'DASのホスト名/IP', value: 'localhost', type: 'text', class: 'host-field' },{ key: 'dasport', label: 'DASポート', value: '49998', type: 'number', class: 'port-field' },]}]},
+        { title: '接続先: DAS端末', fieldRows: [{ fields: [{ key: 'dashost', label: 'DASのホスト名/IP', value: 'localhost', type: 'text', class: 'host-field' },{ key: 'dasport', label: 'DASコマンド ポート', value: '49998', type: 'number', class: 'port-field' },]}]},
     ]
   },
 };

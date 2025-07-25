@@ -15,7 +15,7 @@ let mainWindow: BrowserWindow | null = null;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1028,
     height: 850,
     resizable: true, // リサイズ可能に変更
     webPreferences: {

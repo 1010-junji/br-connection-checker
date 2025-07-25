@@ -38,12 +38,12 @@
 
     <!-- DAS Server -->
     <g>
-        <rect x="125" y="220" width="170" height="80" class="shape das-border" />
+        <rect x="125" y="220" width="170" height="100" class="shape das-border" />
         <text x="210" y="245" class="title-text">DAS端末</text>
         <text x="140" y="270" class="param-label">ホスト:</text>
         <text x="185" y="270" class="param-value">{{ params['dashost'] || '?' }}</text>
-        <text x="140" y="290" class="param-label">ポート:</text>
-        <text x="185" y="290" class="param-value">{{ params['dasport'] || '?' }}</text>
+        <text x="140" y="290" class="param-label">コマンド ポート:</text>
+        <text x="185" y="305" class="param-value">{{ params['dasport'] || '?' }}</text>
     </g>
 
     <!-- Arrows -->

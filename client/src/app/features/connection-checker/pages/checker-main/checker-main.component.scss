@@ -4,6 +4,14 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    margin: 0 auto;
+    
+    .mat-card-header {
+        .mat-icon[fontSet="material-icons-two-tone"] {
+            font-size: 40px;
+        }
+    }
 }
 
 .mode-selection-card {
@@ -113,11 +121,30 @@
                 color: #e57373; // Red
             }
         }
-    }
-}
 
-mat-card-actions {
-    padding: 8px 16px !important;
+        // スクロールバー全体のスタイル
+        &::-webkit-scrollbar {
+            width: 20px;
+        }
+    
+        // スクロールバーの軌道（トラック）部分のスタイル
+        &::-webkit-scrollbar-track {
+            background: #424242; // トラックの背景色を少し濃いグレーに
+            border-radius: 10px;
+        }
+    
+        // スクロールバーのつまみ（サム）部分のスタイル
+        &::-webkit-scrollbar-thumb {
+            background-color: #757575; // つまみの色を明るめのグレーに
+            border-radius: 10px; // つまみを角丸に
+            border: 3px solid #424242; // トラックと同じ色のボーダーを付けて、つまみを細く見せる効果
+        }
+    
+        // スクロールバーのつまみにマウスが乗ったときのスタイル
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #81c784; // ホバー時につまみをさらに明るく
+        }
+    }
 }
 
 .placeholder-container {

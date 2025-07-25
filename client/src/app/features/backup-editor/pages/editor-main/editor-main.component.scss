@@ -1,34 +1,112 @@
+@use '@angular/material' as mat;
+
 .editor-container {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    margin: 0 auto;
+
+    .mat-card-header .mat-icon[fontSet="material-icons-two-tone"] {
+        font-size: 40px;
+    }
 }
 
-.file-selection-content {
+// カードコンテンツ全体のコンテナ
+.card-content-container {
     display: flex;
-    align-items: center;
+    flex-direction: column; // sectionを縦に並べる
+    gap: 12px; // 各セクションの間のスペース
+}
+
+// 各ステップ（セクション）のスタイル
+.step-section {
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+// ステップのヘッダー部分（アイコンとタイトル）
+.step-header {
+    display: flex; // 横並びにする
+    align-items: center; // 上下中央揃え
+    gap: 16px; // アイコンとタイトルの間のスペース
+    margin-bottom: 16px;
+
+    .step-icon {
+        font-size: 28px;
+        height: 28px;
+        width: 28px;
+        color: mat.get-color-from-palette(mat.$grey-palette, 600);
+    }
+
+    .step-title-group {
+        display: flex;
+        flex-direction: column;
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: mat.get-color-from-palette(mat.$grey-palette, 800);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .step-subtitle {
+            font-size: 0.9rem;
+            color: mat.get-color-from-palette(mat.$grey-palette, 600);
+            margin: 4px 0 0 0;
+        }
+    }
+}
+
+// ステップのコンテンツ部分
+.step-content-r {
+    padding-left: 48px; // アイコンの幅に合わせてインデント
+    display: flex;
+    flex-direction: row;
     gap: 16px;
-    padding: 16px 0;
 }
 
-.selected-file-info {
+.step-content-c {
+    padding-left: 48px; // アイコンの幅に合わせてインデント
     display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+// 説明テキストのスタイル
+.description-text {
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+// アクションボタンのコンテナ
+.step-actions {
+    padding: 0; // 親のpaddingをリセット
+    margin-top: 8px;
+    margin-bottom: 0px;
+}
+
+// 選択されたファイル情報のスタイル (既存のものを流用)
+.selected-file-info {
+    display: inline-flex; // ボタンの横に並べるためにinline-flexに
     align-items: center;
+    flex-grow: 1;
     gap: 8px;
     font-family: 'Consolas', 'Courier New', monospace;
     background-color: #f5f5f5;
-    padding: 8px 12px;
+    padding: 0px 12px;
     border-radius: 4px;
     border: 1px solid #eee;
-    flex-grow: 1;
 
     .file-icon {
-        color: #757575;
+        color: mat.get-color-from-palette(mat.$grey-palette, 600);
     }
 }
 
 .log-content {
-    padding-top: 16px;
+    padding-top: 0px;
 }
 
 .log-output {
@@ -57,5 +135,28 @@
     .log-error {
         color: #e57373; // Red
         font-weight: bold;
+    }
+
+    // スクロールバー全体のスタイル
+    &::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    // スクロールバーの軌道（トラック）部分のスタイル
+    &::-webkit-scrollbar-track {
+        background: #424242; // トラックの背景色を少し濃いグレーに
+        border-radius: 10px;
+    }
+
+    // スクロールバーのつまみ（サム）部分のスタイル
+    &::-webkit-scrollbar-thumb {
+        background-color: #757575; // つまみの色を明るめのグレーに
+        border-radius: 10px; // つまみを角丸に
+        border: 3px solid #424242; // トラックと同じ色のボーダーを付けて、つまみを細く見せる効果
+    }
+
+    // スクロールバーのつまみにマウスが乗ったときのスタイル
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #81c784; // ホバー時につまみをさらに明るく
     }
 }

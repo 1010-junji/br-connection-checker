@@ -30,9 +30,9 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
   navItems: NavItem[] = [
     { link: '/home', name: 'ホーム', icon: 'home' },
-    { link: '/connection-checker', name: '疎通チェッカー', icon: 'power' },
-    { link: '/backup-editor', name: 'バックアップ編集', icon: 'dynamic_form' },
-    { link: '/license-activator', name: 'ライセンス認証', icon: 'vpn_key' },
+    { link: '/connection-checker', name: 'コンポーネント間疎通チェッカー', icon: 'power' },
+    { link: '/backup-editor', name: 'バックアップファイル編集ツール', icon: 'dynamic_form' },
+    { link: '/license-activator', name: 'ライセンス認証ブラウザー', icon: 'vpn_key' },
   ];
 
   constructor(

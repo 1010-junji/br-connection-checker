@@ -12,7 +12,7 @@ export function registerLicenseActivatorHandlers(mainWindow: BrowserWindow | nul
       const licenseWindow = new BrowserWindow({
         parent: mainWindow,
         modal: false,
-        width: 1024,
+        width: 1200,
         height: 768,
         autoHideMenuBar: true,
         webPreferences: {

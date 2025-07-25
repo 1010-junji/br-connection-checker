@@ -20,19 +20,19 @@ const routes: Routes = [
       {
         path: 'connection-checker',
         loadChildren: () => import('./features/connection-checker/connection-checker.module').then(m => m.ConnectionCheckerModule),
-        data: { title: '疎通チェッカー' }
+        data: { title: 'コンポーネント間疎通チェッカー' }
       },
       // バックアップ編集機能（遅延読み込み）
       {
         path: 'backup-editor',
         loadChildren: () => import('./features/backup-editor/backup-editor.module').then(m => m.BackupEditorModule),
-        data: { title: 'バックアップ編集' }
+        data: { title: 'バックアップファイル編集ツール' }
       },
       // ライセンス認証機能（遅延読み込み）
       {
         path: 'license-activator',
         loadChildren: () => import('./features/license-activator/license-activator.module').then(m => m.LicenseActivatorModule),
-        data: { title: 'ライセンス認証' }
+        data: { title: 'ライセンス認証ブラウザー' }
       },
     ]
   },

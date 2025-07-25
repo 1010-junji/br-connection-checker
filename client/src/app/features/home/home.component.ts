@@ -18,21 +18,21 @@ export class HomeComponent implements OnInit {
 
   featureCards: FeatureCard[] = [
     {
-      title: '疎通チェッカー',
+      title: 'コンポーネント間疎通チェッカー',
       description: 'コンポーネント間のネットワーク・ポート接続を確認します。',
       icon: 'power',
       route: '/connection-checker',
       color: '#e8f5e9'
     },
     {
-      title: 'バックアップ編集',
-      description: 'ZIP形式のバックアップファイル内のクラスター情報を編集します。',
+      title: 'バックアップファイル編集ツール',
+      description: 'Management Consoleから出力したZIP形式のバックアップファイルを編集します。',
       icon: 'dynamic_form',
       route: '/backup-editor',
       color: '#e8f5e9'
     },
     {
-      title: 'ライセンス認証',
+      title: 'ライセンス認証ブラウザー',
       description: 'Management Consoleを開いてBizRobo!のライセンスを登録します。',
       icon: 'vpn_key',
       route: '/license-activator',
