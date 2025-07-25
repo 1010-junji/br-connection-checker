@@ -26,7 +26,26 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="control-item">
+                <mat-label>自端末のFWチェック</mat-label>
+                <mat-select [(ngModel)]="doPortScan" [disabled]="isRunning">
+                    <mat-option value="no">しない</mat-option>
+                    <mat-option value="yes">する</mat-option>
+                </mat-select>
+            </mat-form-field>
         </mat-card-content>
+
+        <div *ngIf="doPortScan === 'yes'" class="notice-box">
+            <mat-icon>warning_amber</mat-icon>
+            <div>
+                <strong>注意:</strong>
+                <ul>
+                    <li>1024番未満のポートをチェックするには管理者権限での実行が必要です。</li>
+                    <li>チェック中は一時的にポートを確保します。(すでに使用中のポートがある場合、チェックに失敗する可能性があります。)</li>
+                </ul>
+            </div>
+        </div>
     </mat-card>
 
     <ng-container *ngIf="config">

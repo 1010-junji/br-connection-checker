@@ -127,6 +127,7 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
   config: { title: string, checkTargets: CheckTarget[] } | null = null;
   logOutput = '';
   isRunning = false;
+  doPortScan: 'yes' | 'no' = 'no';
 
   private progressListenerCleaner: (() => void) | null = null;
   private logObserver?: MutationObserver;
@@ -141,16 +142,7 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (window.electronAPI) {
       this.progressListenerCleaner = window.electronAPI.onCheckProgress((event, log) => {
-        this.zone.run(() => {
-          let formattedLog = this.escapeHtml(log);
-          if (formattedLog.startsWith('%%OK%%')) {
-            formattedLog = `<span class="log-ok">${formattedLog.replace('%%OK%%', '')}</span>`;
-          } else if (formattedLog.startsWith('%%NG%%')) {
-            formattedLog = `<span class="log-ng">${formattedLog.replace('%%NG%%', '')}</span>`;
-          }
-          this.logOutput += formattedLog;
-          this.cdr.detectChanges(); // 手動で変更検出をトリガー
-        });
+        this.appendLog(log);
       });
     }
   }
@@ -168,6 +160,19 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.progressListenerCleaner?.();
     this.logObserver?.disconnect();
+  }
+
+  private appendLog(log: string) {
+    this.zone.run(() => {
+      let formattedLog = this.escapeHtml(log);
+      if (formattedLog.startsWith('%%OK%%')) {
+        formattedLog = `<span class="log-ok">${formattedLog.replace('%%OK%%', '')}</span>`;
+      } else if (formattedLog.startsWith('%%NG%%')) {
+        formattedLog = `<span class="log-ng">${formattedLog.replace('%%NG%%', '')}</span>`;
+      }
+      this.logOutput += formattedLog;
+      this.cdr.detectChanges();
+    });
   }
 
   onModeChange(mode: string | null): void {
@@ -208,10 +213,15 @@ export class CheckerMainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.isRunning = true;
     this.logOutput = `--- ${this.config.title} のチェックを開始します ---\n\n`;
-
+    
     const params = this.getFormParams();
     params['title'] = this.config.title;
     params['ipFamily'] = this.selectedIpFamily;
+    params['doPortScan'] = this.doPortScan;
+    
+    if (this.doPortScan === 'no') {
+        this.logOutput = `--- ${this.config?.title} のチェックを開始します ---\n\n`;
+    }
 
     try {
       await window.electronAPI.runCheck(this.selectedMode, params);

@@ -29,6 +29,29 @@
         flex: 1; // 幅を均等に分ける
     }
 }
+
+.notice-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: #fff3e0; // Amber 50
+    color: #c77700;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 16px 16px 0 16px; // mat-card-contentのpaddingを考慮
+    border: 1px solid #ffe0b2; // Amber 100
+
+    .mat-icon {
+        margin-top: 2px;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.9em;
+    }
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
