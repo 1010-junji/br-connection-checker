@@ -45,7 +45,7 @@ _(スクリーンショットのプレースホルダー: ライセンス認証�
 
 最新バージョンのインストーラーは、リリースページからダウンロードしてください。
 
-➡️ **[最新のリリースをダウンロード](https://github.com/1010-junji/br-connection-checker/releases)**
+➡️ **[最新のリリースをダウンロード](https://github.com/1010-junji/br-setup-toolkit/releases)**
 
 Windows 向けには、インストーラー版 (`.exe`) と、インストール不要のポータブル版 (`.exe`) を提供しています。
 
@@ -67,8 +67,8 @@ Windows 向けには、インストーラー版 (`.exe`) と、インストー�
 1.  リポジトリをクローンします。
 
     ```bash
-    git clone https://github.com/1010-junji/br-connection-checker.git
-    cd br-connection-checker
+    git clone https://github.com/1010-junji/br-setup-toolkit.git
+    cd br-setup-toolkit
     ```
 
 2.  バックエンド（Electron）の依存関係をインストールします。
