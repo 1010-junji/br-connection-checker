@@ -5,6 +5,7 @@ import * as path from 'path';
 import { registerConnectionCheckerHandlers } from './features/connection-checker.handler';
 import { registerBackupEditorHandlers } from './features/backup-editor.handler';
 import { registerLicenseActivatorHandlers } from './features/license-activator.handler';
+import { registerSettingsHandlers } from './features/settings.handler';
 
 const isDev = !app.isPackaged;
 const loadURL = isDev ? null : require('electron-serve')({
@@ -17,13 +18,12 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1028,
     height: 850,
-    resizable: true, // リサイズ可能に変更
+    resizable: true, 
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
-    // autoHideMenuBar: true
   });
 
   mainWindow.setMenu(null);
@@ -39,6 +39,7 @@ function createWindow(): void {
   registerConnectionCheckerHandlers(mainWindow);
   registerBackupEditorHandlers(mainWindow);
   registerLicenseActivatorHandlers(mainWindow);
+  registerSettingsHandlers(); // 新しいハンドラを登録
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -54,12 +55,10 @@ app.on('certificate-error', (event, webContents, url, error, certificate, callba
   const parsedUrl = new URL(url);
   // localhostまたは127.0.0.1からの接続であれば、証明書エラーを無視して接続を許可する
   if (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') {
-    console.log(`[Certificate Error] Ignoring error for local domain: ${url}`);
-    event.preventDefault(); // Electronのデフォルトの動作（接続拒否）をキャンセル
-    callback(true); // 接続を許可
+    event.preventDefault(); 
+    callback(true);
   } else {
-    console.warn(`[Certificate Error] Blocking connection to untrusted domain: ${url}`);
-    callback(false); // 接続を拒否 (デフォルトの動作)
+    callback(false);
   }
 });
 

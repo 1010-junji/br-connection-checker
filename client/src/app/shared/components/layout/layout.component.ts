@@ -28,12 +28,18 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   isSidenavOpen: boolean = false;
   pageHeader: PageHeader = { title: DEFAULT_TITLE };
 
-  navItems: NavItem[] = [
+  // メインのナビゲーションアイテム
+  mainNavItems: NavItem[] = [
     { link: '/home', name: 'ホーム', icon: 'home' },
     { link: '/connection-checker', name: 'コンポーネント間疎通チェッカー', icon: 'power' },
     { link: '/backup-editor', name: 'バックアップファイル編集ツール', icon: 'dynamic_form' },
     { link: '/license-activator', name: 'ライセンス認証ブラウザー', icon: 'vpn_key' },
   ];
+
+  // 設定用のナビゲーションアイテム
+  settingsNavItem: NavItem = {
+    link: '/settings', name: 'アプリケーション設定', icon: 'settings'
+  };
 
   constructor(
     private layoutService: LayoutService,
@@ -46,7 +52,6 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
       takeUntil(this.destroy$)
     ).subscribe(isOpen => {
       this.isSidenavOpen = isOpen;
-      // AfterViewInitが呼ばれた後であれば、Sidenavを直接操作
       if (this.sidenav) {
         this.isSidenavOpen ? this.sidenav.open() : this.sidenav.close();
       }
@@ -62,9 +67,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setupScrollRequestHandler();
   }
 
-  // AfterViewInitは不要になるか、あるいは最初の状態同期のために残す
   ngAfterViewInit(): void {
-    // コンポーネント初期化時に、サービスが持つ最新の状態でSidenavを同期する
     if (this.isSidenavOpen) {
       this.sidenav.open();
     } else {

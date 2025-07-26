@@ -34,6 +34,12 @@ const routes: Routes = [
         loadChildren: () => import('./features/license-activator/license-activator.module').then(m => m.LicenseActivatorModule),
         data: { title: 'ライセンス認証ブラウザー' }
       },
+      // アプリケーション設定機能（遅延読み込み）
+      {
+        path: 'settings',
+        loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule),
+        data: { title: 'アプリケーション設定' }
+      },
     ]
   },
   // 上記以外のパスはホームにリダイレクト
@@ -41,7 +47,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })], // useHash: true はElectronで推奨
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

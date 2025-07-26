@@ -1,5 +1,3 @@
-// client/src/app/shared/components/layout/layout.component.scss
-
 .app-wrapper {
     display: flex;
     flex-direction: column;
@@ -17,17 +15,19 @@
     overflow: hidden;
 }
 
-// ★★★ 修正: サイドナビのスタイル ★★★
 .sidenav {
-    // 開閉状態に関わらず、幅をアイコンが収まるサイズに固定
     width: 60px;
     background-color: #ffffff;
     border-right: 1px solid rgba(0, 0, 0, 0.12);
-    // サイドナビの開閉アニメーションをスムーズにする
     transition: min-width 225ms cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
 
-// `mat-drawer-opened` が付いても幅は変えないので、専用のスタイルは不要
+    // Flexboxレイアウトでフッターを最下部に固定
+    // mat-sidenavの直接の子要素はmat-drawer-inner-containerなので、それをターゲットにする
+    ::ng-deep .mat-drawer-inner-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
 
 .sidenav-content {
     display: flex;
@@ -41,17 +41,16 @@
     padding: 24px;
 }
 
-
-// ★★★ 修正: ナビゲーションリストとアイテムのスタイル ★★★
 .mat-nav-list {
-    padding-top: 0; // ツールバーを消したので、上のパディングを詰める
+    padding-top: 0;
 }
 
-.mat-nav-list .mat-list-item {
-    height: 56px; // 高さを確保
+.mat-nav-list .mat-list-item,
+.sidenav-footer .mat-list-item {
+    // フッターのアイテムにも同じスタイルを適用
+    height: 56px;
     color: rgba(0, 0, 0, 0.87);
 
-    // アイコンがアイテム内で中央に来るように調整
     .mat-list-item-content {
         justify-content: center;
         padding: 0;
@@ -63,13 +62,19 @@
         font-size: 24px;
     }
 
-    // アクティブなリンクのスタイル
     &.active-list-item {
-
-        // アイコンの背景に色を付けることでアクティブ状態を示す
         .mat-icon {
-            color: #2e7d32; // プライマリカラー
-            background-color: rgba(46, 125, 50, 0.1);
+            color: #2e7d32;
         }
     }
+}
+
+// フッターコンテナのスタイル
+.sidenav-footer {
+    margin-top: auto; // これがフッターを最下部に押しやるキー
+    padding-bottom: 8px;
+
+    // 区切り線
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    padding-top: 8px;
 }

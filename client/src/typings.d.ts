@@ -16,6 +16,19 @@ export interface OpenWindowResult {
     error?: string;
 }
 
+export interface DbConnectionParams {
+    host: string;
+    port: number;
+    user: string;
+    password?: string;
+    database: string;
+}
+
+export interface TestDbConnectionResult {
+    success: boolean;
+    message: string;
+}
+
 export interface IElectronAPI {
   // --- 疎通チェッカー ---
   runCheck: (mode: string, params: any) => Promise<{ success: boolean; error?: string }>;
@@ -27,9 +40,14 @@ export interface IElectronAPI {
   processBackupFile: (filePath: string) => Promise<ProcessBackupResult>;
   onBackupProcessLog: (callback: (event: IpcRendererEvent, log: string) => void) => () => void;
 
-  // --- 追加: ライセンス認証機能 ---
+  // --- ライセンス認証機能 ---
   openLicenseWindow: (url: string) => Promise<OpenWindowResult>;
   onLicenseWindowError: (callback: (event: IpcRendererEvent, errorInfo: { url: string; error: string; }) => void) => () => void;
+
+  // --- アプリケーション設定機能 ---
+  getAppSettings: () => Promise<DbConnectionParams>;
+  saveAppSettings: (settings: DbConnectionParams) => Promise<{ success: boolean; error?: string }>;
+  testDbConnection: (params: DbConnectionParams) => Promise<TestDbConnectionResult>;
 }
 
 declare global {

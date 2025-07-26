@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
+    "@types/mysql": "^2.15.27",
     "@types/node": "^24.0.6",
     "@types/ping": "^0.4.4",
     "@types/xmldom": "^0.1.34",
@@ -35,6 +36,7 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "electron-serve": "^1.3.0",
+    "mysql2": "^3.14.2",
     "xmldom": "^0.6.0"
   },
   "build": {

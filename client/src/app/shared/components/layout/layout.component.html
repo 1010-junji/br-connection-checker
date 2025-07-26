@@ -1,6 +1,5 @@
 <div class="app-wrapper">
 
-    <!-- メインツールバー (変更なし) -->
     <mat-toolbar color="primary" class="main-toolbar">
         <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle sidenav">
             <mat-icon>menu</mat-icon>
@@ -13,15 +12,24 @@
         <!-- サイドナビゲーション -->
         <mat-sidenav #sidenav class="sidenav" [mode]="'side'" (closed)="onSidenavClosed()">
 
+            <!-- 上部のナビゲーションリスト -->
             <mat-nav-list>
-                <a mat-list-item *ngFor="let item of navItems" [routerLink]="item.link"
+                <a mat-list-item *ngFor="let item of mainNavItems" [routerLink]="item.link"
                     routerLinkActive="active-list-item" [matTooltip]="item.name" matTooltipPosition="right">
                     <mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
                 </a>
             </mat-nav-list>
+
+            <!-- 最下部に固定する設定アイコン -->
+            <mat-nav-list class="sidenav-footer">
+                <a mat-list-item [routerLink]="settingsNavItem.link" routerLinkActive="active-list-item"
+                    [matTooltip]="settingsNavItem.name" matTooltipPosition="right">
+                    <mat-icon mat-list-icon>{{ settingsNavItem.icon }}</mat-icon>
+                </a>
+            </mat-nav-list>
+
         </mat-sidenav>
 
-        <!-- メインコンテンツ (変更なし) -->
         <mat-sidenav-content class="sidenav-content">
             <main #scrollableContent class="content">
                 <router-outlet></router-outlet>

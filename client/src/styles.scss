@@ -108,3 +108,14 @@ body {
         padding-bottom: 0em;
     }
 }
+
+// スナックバー用のカスタムスタイル
+.snackbar-success {
+    background-color: #2e7d32; // プライマリの濃い色
+    color: white;
+}
+
+.snackbar-error {
+    background-color: #d32f2f; // Warnカラー
+    color: white;
+}

@@ -1,0 +1,45 @@
+.settings-container {
+    margin: 0 auto;
+
+    .mat-card-header .mat-icon[fontSet="material-icons-two-tone"] {
+        font-size: 40px;
+    }
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* フォーム間の少しの隙間 */
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    /* 横並びのフォームの隙間 */
+    width: 100%;
+}
+
+.host-field {
+    flex: 3;
+}
+
+.port-field {
+    flex: 1;
+}
+
+.user-field {
+    flex: 1;
+}
+
+.password-field {
+    flex: 1;
+}
+
+.full-width-field {
+    width: 100%;
+}
+
+.mat-card-actions {
+    gap: 8px;
+}

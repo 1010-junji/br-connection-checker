@@ -1,0 +1,60 @@
+<div class="settings-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-icon mat-card-avatar fontSet="material-icons-two-tone">storage</mat-icon>
+            <mat-card-title>データベース接続設定</mat-card-title>
+            <mat-card-subtitle>アプリケーションが使用するMySQLデータベースへの接続情報を設定します。</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="settingsForm" class="settings-form">
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="host-field">
+                        <mat-label>ホスト名 / IPアドレス</mat-label>
+                        <input matInput formControlName="host" required>
+                        <mat-error *ngIf="settingsForm.get('host')?.hasError('required')">必須です</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="port-field">
+                        <mat-label>ポート番号</mat-label>
+                        <input matInput type="number" formControlName="port" required>
+                        <mat-error *ngIf="settingsForm.get('port')?.hasError('required')">必須です</mat-error>
+                        <mat-error
+                            *ngIf="settingsForm.get('port')?.hasError('min') || settingsForm.get('port')?.hasError('max')">1-65535の範囲で入力してください</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="user-field">
+                        <mat-label>ユーザー名</mat-label>
+                        <input matInput formControlName="user" required>
+                        <mat-error *ngIf="settingsForm.get('user')?.hasError('required')">必須です</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="password-field">
+                        <mat-label>パスワード</mat-label>
+                        <input matInput type="password" formControlName="password"
+                            matTooltip="パスワードは暗号化されずに保存されます。取り扱いにご注意ください。">
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width-field">
+                    <mat-label>データベース名</mat-label>
+                    <input matInput formControlName="database" required>
+                    <mat-error *ngIf="settingsForm.get('database')?.hasError('required')">必須です</mat-error>
+                </mat-form-field>
+            </form>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-stroked-button color="primary" (click)="testConnection()"
+                [disabled]="settingsForm.invalid || isTesting || isSaving">
+                <mat-icon>power</mat-icon>
+                接続テスト
+            </button>
+            <button mat-raised-button color="primary" (click)="saveSettings()"
+                [disabled]="settingsForm.invalid || isSaving || isTesting">
+                <mat-icon>save</mat-icon>
+                設定を保存
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

@@ -12,4 +12,9 @@ export const channels = {
     // ライセンス認証機能
     OPEN_LICENSE_WINDOW: 'open-license-window',
     LICENSE_WINDOW_ERROR: 'license-window-error',
+    
+    // アプリケーション設定機能
+    GET_APP_SETTINGS: 'get-app-settings',
+    SAVE_APP_SETTINGS: 'save-app-settings',
+    TEST_DB_CONNECTION: 'test-db-connection',
 };
