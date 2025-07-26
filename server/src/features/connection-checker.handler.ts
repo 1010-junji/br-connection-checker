@@ -149,92 +149,84 @@ async function checkLocalPort(win: BrowserWindow | null, port: number): Promise<
 
 // Outboundポートチェック関数
 async function checkOutboundPort(win: BrowserWindow | null, port: number): Promise<void> {
-  return new Promise((resolve) => {
-    sendProgress(win, `  - Outbound: ポート ${port} のチェック中...`);
-    const socket = new net.Socket();
-    socket.setTimeout(2000); // タイムアウトは短めに
+  sendProgress(win, `  - Outbound: ポート ${port} のチェック中...`);
 
-    // 宛先はどこでもよいが、到達不能なプライベートIPなどを使用
-    // localPortを指定することが重要
-    const options = { host: '192.0.2.1', port: 80, localPort: port };
+  const socket = new net.Socket();
+  socket.setTimeout(2000);
 
-    socket.on('error', (err: NodeJS.ErrnoException) => {
-      // 宛先が存在しないので ECONNREFUSED や ETIMEDOUT は「成功」とみなす
-      // ファイアウォールでブロックされた場合は EACCES などになる
-      if (err.code === 'EACCES') {
-        sendProgress(win, `%%NG%%    [ブロック] ポート ${port} からの外向き通信はファイアウォールにブロックされました。`);
-      } else {
-        sendProgress(win, `%%OK%%    [許可] ポート ${port} からの外向き通信は許可されています。(エラー: ${err.code})`);
-      }
-      socket.destroy();
-      resolve();
+  try {
+    // 接続試行をPromiseでラップ
+    await new Promise<void>((resolve, reject) => {
+      socket.on('error', reject); // エラー時にreject
+      socket.on('timeout', () => reject(new Error('timeout'))); // タイムアウト時にreject
+      // connectは成功しない前提なので、connectイベントは使わない
+      socket.connect({ host: '192.0.2.1', port: 80, localPort: port }, () => {
+        // このパスに来ることはほぼないが、念のため
+        resolve();
+      });
     });
-
-    socket.on('timeout', () => {
-      sendProgress(win, `%%OK%%    [許可] ポート ${port} からの外向き通信は許可されています。(タイムアウト)`);
-      socket.destroy();
-      resolve();
-    });
-
-    socket.connect(options);
-  });
+  } catch (err: any) {
+    // 接続試行が失敗するのは正常な動作
+    if (err.code === 'EACCES') {
+      sendProgress(win, `%%NG%%    [ブロック] ポート ${port} からの外向き通信はファイアウォールにブロックされました。`);
+    } else {
+      // ECONNREFUSED, ETIMEDOUT, または 'timeout' エラーは許可されている証拠
+      sendProgress(win, `%%OK%%    [許可] ポート ${port} からの外向き通信は許可されています。(詳細: ${err.code || err.message})`);
+    }
+  } finally {
+    socket.destroy();
+  }
 }
 
 // Inboundポートチェック関数
 async function checkInboundPort(win: BrowserWindow | null, port: number): Promise<void> {
-  return new Promise((resolve) => {
-    sendProgress(win, `  - Inbound: ポート ${port} のチェック中...`);
+  sendProgress(win, `  - Inbound: ポート ${port} のチェック中...`);
 
-    // Step 1: まず、ポートに接続を試みる
-    const initialClient = net.createConnection({ port: port, host: '127.0.0.1' });
-    initialClient.setTimeout(2000);
-
-    initialClient.on('connect', () => {
-      // 接続に成功した場合: 既にリッスン中で、FWも許可している
-      sendProgress(win, `%%OK%%    [許可] ポート ${port} は既に他のプロセスが使用しており、接続も許可されています。`);
-      initialClient.end();
-      resolve();
+  // Step 1: まず、ポートに接続を試みる
+  const client = new net.Socket();
+  client.setTimeout(2000);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      client.on('connect', resolve);
+      client.on('timeout', () => reject(new Error('timeout')));
+      client.on('error', reject);
+      client.connect({ port, host: '127.0.0.1' });
     });
+    // 接続に成功した場合: 既にリッスン中で、FWも許可している
+    sendProgress(win, `%%OK%%    [許可] ポート ${port} は既に他のプロセスが使用しており、接続も許可されています。`);
+  } catch (err: any) {
+    client.destroy(); // 失敗したので即座に破棄
 
-    initialClient.on('timeout', () => {
-      // タイムアウトした場合: FWがブロックしている可能性が高い
-      sendProgress(win, `%%NG%%    [ブロック] ポート ${port} への接続がタイムアウトしました。ファイアウォールが通信を破棄している可能性があります。`);
-      initialClient.destroy();
-      resolve();
-    });
-
-    initialClient.on('error', (err: NodeJS.ErrnoException) => {
-      initialClient.destroy();
-
-      // 接続が拒否された場合 (ECONNREFUSED): ポートは空いている
-      if (err.code === 'ECONNREFUSED') {
-        // Step 2: ポートが空いているので、リッスンを試みる
-        const server = net.createServer();
-
-        server.on('error', (listenErr: NodeJS.ErrnoException) => {
-          if (listenErr.code === 'EACCES') {
-            sendProgress(win, `%%NG%%    [ブロック/権限エラー] ポート ${port} の待ち受けに失敗しました。管理者権限が必要か、他のプロセスが排他利用中です。`);
-          } else {
-            sendProgress(win, `%%NG%%    [リッスン不可] ポート ${port} の待ち受けに失敗しました。 (エラー: ${listenErr.code})`);
-          }
-          resolve();
+    if (err.code === 'ECONNREFUSED') {
+      // Step 2: ポートが空いているので、リッスンを試みる
+      const server = net.createServer();
+      try {
+        await new Promise<void>((resolve, reject) => {
+          server.on('error', reject);
+          server.listen(port, '127.0.0.1', () => resolve());
         });
-
-        server.listen(port, '127.0.0.1', () => {
-          // リッスンに成功した場合: ポートは利用可能
-          sendProgress(win, `%%OK%%    [許可] ポート ${port} は空いており、待ち受けが可能です。`);
-          server.close();
-          resolve();
-        });
-      } else {
-        // その他の接続エラーの場合
-        sendProgress(win, `%%NG%%    [ブロック] ポート ${port} への接続に失敗しました。 (エラー: ${err.code})`);
-        resolve();
+        // リッスンに成功した場合: ポートは利用可能
+        sendProgress(win, `%%OK%%    [許可] ポート ${port} は空いており、待ち受けが可能です。`);
+      } catch (listenErr: any) {
+        if (listenErr.code === 'EACCES') {
+          sendProgress(win, `%%NG%%    [ブロック/権限エラー] ポート ${port} の待ち受けに失敗しました。管理者権限が必要か、他のプロセスが排他利用中です。`);
+        } else {
+          sendProgress(win, `%%NG%%    [リッスン不可] ポート ${port} の待ち受けに失敗しました。 (エラー: ${listenErr.code})`);
+        }
+      } finally {
+        server.close();
       }
-    });
-  });
+    } else if (err.message === 'timeout') {
+      sendProgress(win, `%%NG%%    [ブロック] ポート ${port} への接続がタイムアウトしました。ファイアウォールが通信を破棄している可能性があります。`);
+    } else {
+      sendProgress(win, `%%NG%%    [ブロック] ポート ${port} への接続に失敗しました。 (エラー: ${err.code})`);
+    }
+  } finally {
+    if (!client.destroyed) {
+      client.destroy();
+    }
+  }
 }
-
 // ポートスキャン実行のメイン関数
 async function runPortScan(win: BrowserWindow | null, params: any) {
   sendProgress(win, `------------------------------------------------`);
