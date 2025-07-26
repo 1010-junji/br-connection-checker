@@ -16,7 +16,9 @@ export interface OpenWindowResult {
     error?: string;
 }
 
-export interface DbConnectionParams {
+export interface DbSetting {
+    id: string;
+    name: string;
     host: string;
     port: number;
     user: string;
@@ -27,6 +29,16 @@ export interface DbConnectionParams {
 export interface TestDbConnectionResult {
     success: boolean;
     message: string;
+}
+
+export interface TablePreviewData {
+    headers: string[];
+    rows: any[];
+}
+export interface ExportResult {
+    success: boolean;
+    filePath?: string;
+    error?: string;
 }
 
 export interface IElectronAPI {
@@ -44,10 +56,15 @@ export interface IElectronAPI {
   openLicenseWindow: (url: string) => Promise<OpenWindowResult>;
   onLicenseWindowError: (callback: (event: IpcRendererEvent, errorInfo: { url: string; error: string; }) => void) => () => void;
 
-  // --- アプリケーション設定機能 ---
-  getAppSettings: () => Promise<DbConnectionParams>;
-  saveAppSettings: (settings: DbConnectionParams) => Promise<{ success: boolean; error?: string }>;
-  testDbConnection: (params: DbConnectionParams) => Promise<TestDbConnectionResult>;
+  // --- アプリケーション設定機能 (複数定義対応版) ---
+  getDbSettingsList: () => Promise<DbSetting[]>;
+  saveDbSettingsList: (settings: DbSetting[]) => Promise<{ success: boolean; error?: string }>;
+  testDbConnection: (params: DbSetting) => Promise<TestDbConnectionResult>;
+
+  // --- データ抽出機能 ---
+  getTableList: (params: DbSetting) => Promise<string[]>;
+  getTablePreview: (params: DbSetting, tableName: string) => Promise<TablePreviewData>;
+  exportTableToZip: (params: DbSetting, tableName: string) => Promise<ExportResult>;
 }
 
 declare global {

@@ -6,6 +6,7 @@ import { registerConnectionCheckerHandlers } from './features/connection-checker
 import { registerBackupEditorHandlers } from './features/backup-editor.handler';
 import { registerLicenseActivatorHandlers } from './features/license-activator.handler';
 import { registerSettingsHandlers } from './features/settings.handler';
+import { registerDataExtractorHandlers } from './features/data-extractor.handler'; 
 
 const isDev = !app.isPackaged;
 const loadURL = isDev ? null : require('electron-serve')({
@@ -39,7 +40,8 @@ function createWindow(): void {
   registerConnectionCheckerHandlers(mainWindow);
   registerBackupEditorHandlers(mainWindow);
   registerLicenseActivatorHandlers(mainWindow);
-  registerSettingsHandlers(); // 新しいハンドラを登録
+  registerSettingsHandlers(); 
+  registerDataExtractorHandlers();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

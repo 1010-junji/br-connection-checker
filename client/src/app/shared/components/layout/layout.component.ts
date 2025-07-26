@@ -34,6 +34,7 @@ export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     { link: '/connection-checker', name: 'コンポーネント間疎通チェッカー', icon: 'power' },
     { link: '/backup-editor', name: 'バックアップファイル編集ツール', icon: 'dynamic_form' },
     { link: '/license-activator', name: 'ライセンス認証ブラウザー', icon: 'vpn_key' },
+    { link: '/data-extractor', name: 'テーブルデータ抽出', icon: 'table_view' },
   ];
 
   // 設定用のナビゲーションアイテム

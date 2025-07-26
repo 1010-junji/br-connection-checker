@@ -1,8 +1,83 @@
-.settings-container {
-    margin: 0 auto;
+@use '@angular/material' as mat;
 
-    .mat-card-header .mat-icon[fontSet="material-icons-two-tone"] {
-        font-size: 40px;
+.page-container {
+    display: flex;
+    gap: 16px;
+    height: 100%;
+}
+
+.list-panel {
+    flex: 1;
+    min-width: 320px;
+    max-width: 400px;
+    min-height: 0;
+}
+
+.form-panel {
+    flex: 2;
+    min-height: 0;
+}
+
+.list-card,
+.form-card {
+    height: calc(100% - 24px); // .conentのpaddingを考慮
+    display: flex;
+    flex-direction: column;
+
+    .mat-card-content {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+}
+
+.list-card-header {
+    flex-shrink: 0;
+
+    // Flexboxを明示的に設定し、垂直中央揃えにする
+    display: flex;
+    align-items: center;
+
+    // タイトル要素が残りのスペースをすべて埋めるようにする
+    // これにより、後続のアイコンボタンが自動的に右端に配置される
+    .mat-card-title {
+        flex-grow: 1;
+        // mat-card-titleが持つデフォルトの下マージンをリセットし、
+        // より正確な中央揃えを実現する
+        margin-bottom: 0;
+    }
+}
+
+.mat-action-list .mat-list-item {
+    &.selected-item {
+        background-color: mat.get-color-from-palette(mat.$grey-palette, 100);
+        font-weight: 500;
+    }
+
+    .list-item-subtitle {
+        font-size: 0.8rem;
+        color: mat.get-color-from-palette(mat.$grey-palette, 600);
+    }
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.empty-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 24px);  // .conentのpaddingを考慮
+    color: #777;
+    text-align: center;
+    padding: 12px 24px;
+
+    .empty-list-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #bbb;
     }
 }
 
@@ -10,13 +85,11 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    /* フォーム間の少しの隙間 */
 }
 
 .form-row {
     display: flex;
     gap: 16px;
-    /* 横並びのフォームの隙間 */
     width: 100%;
 }
 
@@ -42,4 +115,32 @@
 
 .mat-card-actions {
     gap: 8px;
+    flex-shrink: 0;
+}
+
+.placeholder-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 24px);  // .contentのpaddingを考慮
+    padding: 14px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #777;
+    text-align: center;
+
+    .placeholder-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #bbb;
+    }
+
+    .placeholder-text {
+        margin-top: 16px;
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
 }

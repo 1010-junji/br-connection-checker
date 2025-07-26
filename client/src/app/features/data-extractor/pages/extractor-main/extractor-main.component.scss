@@ -1,0 +1,54 @@
+.page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mat-card-header .mat-icon[fontSet="material-icons-two-tone"] {
+    font-size: 40px;
+}
+
+.step-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-select,
+.table-select {
+    flex-grow: 1;
+}
+
+.table-container {
+    margin-top: 16px;
+    max-height: 500px;
+    overflow: auto;
+    border: 1px solid rgba(0, 0, 0, .12);
+}
+
+.preview-title {
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    font-size: 0.9em;
+    color: #666;
+    margin: 0;
+}
+
+.mat-table {
+    width: 100%;
+}
+
+.mat-header-cell {
+    font-weight: 500;
+    background-color: #fafafa;
+}
+
+.mat-cell,
+.mat-header-cell {
+    padding: 8px 16px;
+    border-right: 1px solid #e0e0e0;
+
+    &:last-child {
+        border-right: none;
+    }
+}

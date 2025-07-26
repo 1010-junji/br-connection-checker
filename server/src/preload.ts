@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { channels } from './shared-channels';
-import { DbConnectionParams } from './features/types';
+import { DbSetting } from './features/types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // --- 疎通チェッカー ---
@@ -26,8 +26,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeAllListeners(channels.LICENSE_WINDOW_ERROR);
   },
 
-  // --- アプリケーション設定機能 ---
-  getAppSettings: () => ipcRenderer.invoke(channels.GET_APP_SETTINGS),
-  saveAppSettings: (settings: DbConnectionParams) => ipcRenderer.invoke(channels.SAVE_APP_SETTINGS, settings),
-  testDbConnection: (params: DbConnectionParams) => ipcRenderer.invoke(channels.TEST_DB_CONNECTION, params),
+  // --- アプリケーション設定機能 (複数定義対応版) ---
+  getDbSettingsList: () => ipcRenderer.invoke(channels.GET_DB_SETTINGS_LIST),
+  saveDbSettingsList: (settings: DbSetting[]) => ipcRenderer.invoke(channels.SAVE_DB_SETTINGS_LIST, settings),
+  testDbConnection: (params: DbSetting) => ipcRenderer.invoke(channels.TEST_DB_CONNECTION, params),
+
+  // --- データ抽出機能 ---
+  getTableList: (params: DbSetting) => ipcRenderer.invoke(channels.GET_TABLE_LIST, params),
+  getTablePreview: (params: DbSetting, tableName: string) => ipcRenderer.invoke(channels.GET_TABLE_PREVIEW, params, tableName),
+  exportTableToZip: (params: DbSetting, tableName: string) => ipcRenderer.invoke(channels.EXPORT_TABLE_TO_ZIP, params, tableName),
 });

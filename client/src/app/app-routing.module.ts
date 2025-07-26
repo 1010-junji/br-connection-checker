@@ -34,6 +34,12 @@ const routes: Routes = [
         loadChildren: () => import('./features/license-activator/license-activator.module').then(m => m.LicenseActivatorModule),
         data: { title: 'ライセンス認証ブラウザー' }
       },
+      // データ抽出機能（遅延読み込み）
+      {
+        path: 'data-extractor',
+        loadChildren: () => import('./features/data-extractor/data-extractor.module').then(m => m.DataExtractorModule),
+        data: { title: 'テーブルデータ抽出' }
+      },
       // アプリケーション設定機能（遅延読み込み）
       {
         path: 'settings',

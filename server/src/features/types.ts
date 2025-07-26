@@ -14,7 +14,9 @@ export interface OpenWindowResult {
   error?: string;
 }
 
-export interface DbConnectionParams {
+export interface DbSetting {
+    id: string;
+    name: string;
     host: string;
     port: number;
     user: string;
@@ -25,4 +27,14 @@ export interface DbConnectionParams {
 export interface TestDbConnectionResult {
     success: boolean;
     message: string;
+}
+
+export interface TablePreviewData {
+    headers: string[];
+    rows: any[];
+}
+export interface ExportResult {
+    success: boolean;
+    filePath?: string;
+    error?: string;
 }

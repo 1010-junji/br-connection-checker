@@ -2,37 +2,36 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { SettingsRoutingModule } from './settings-routing.module';
-import { SettingsMainComponent } from './pages/settings-main/settings-main.component';
+import { DataExtractorRoutingModule } from './data-extractor-routing.module';
+import { ExtractorMainComponent } from './pages/extractor-main/extractor-main.component';
 
 // --- Angular Material Modules ---
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
-    SettingsMainComponent
+    ExtractorMainComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    SettingsRoutingModule,
-
+    DataExtractorRoutingModule,
     // Angular Material
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressBarModule,
+    MatTableModule,
     MatSnackBarModule,
-    MatTooltipModule,
-    MatListModule,
   ]
 })
-export class SettingsModule { }
+export class DataExtractorModule { }

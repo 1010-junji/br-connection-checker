@@ -23,12 +23,6 @@
     }
 }
 
-.mat-card-header {
-    .mat-card-subtitle {
-        margin: 0.5rem 0 0 0;
-    }
-}
-
 .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -42,6 +36,7 @@
 
     &:hover {
         transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
     }
 
     .card-avatar {

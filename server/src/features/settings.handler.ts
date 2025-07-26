@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import mysql from 'mysql2/promise';
 import { channels } from '../shared-channels';
-import { DbConnectionParams } from './types';
+import { DbSetting } from './types';
 
 const SETTINGS_FILE_NAME = 'settings.json';
 
@@ -12,37 +12,32 @@ function getSettingsFilePath(): string {
   return path.join(app.getPath('userData'), SETTINGS_FILE_NAME);
 }
 
-// デフォルト設定
-const defaultSettings: DbConnectionParams = {
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: '',
-  database: 'kapow'
-};
-
 export function registerSettingsHandlers() {
-  // 設定を取得するハンドラ
-  ipcMain.handle(channels.GET_APP_SETTINGS, async (): Promise<DbConnectionParams> => {
+  // 設定リストを取得するハンドラ
+  ipcMain.handle(channels.GET_DB_SETTINGS_LIST, async (): Promise<DbSetting[]> => {
     try {
       const filePath = getSettingsFilePath();
       const data = await fs.readFile(filePath, 'utf-8');
-      return JSON.parse(data);
+      const settings = JSON.parse(data);
+      // 配列であることを確認
+      return Array.isArray(settings) ? settings : [];
     } catch (error: any) {
-      // ファイルが存在しない、または読み取りエラーの場合はデフォルト設定を返す
+      // ファイルが存在しない、または読み取りエラーの場合は空の配列を返す
       if (error.code === 'ENOENT') {
-        console.log('Settings file not found, returning default settings.');
-        return defaultSettings;
+        console.log('Settings file not found, returning empty list.');
+        return [];
       }
       console.error('Failed to read settings file:', error);
-      // その他のエラーの場合もデフォルト設定を返す
-      return defaultSettings;
+      return [];
     }
   });
 
-  // 設定を保存するハンドラ
-  ipcMain.handle(channels.SAVE_APP_SETTINGS, async (event, settings: DbConnectionParams): Promise<{ success: boolean; error?: string }> => {
+  // 設定リストを保存するハンドラ
+  ipcMain.handle(channels.SAVE_DB_SETTINGS_LIST, async (event, settings: DbSetting[]): Promise<{ success: boolean; error?: string }> => {
     try {
+      if (!Array.isArray(settings)) {
+          throw new Error("Invalid data format: expected an array of settings.");
+      }
       const filePath = getSettingsFilePath();
       // NOTE: 本番アプリケーションでは、パスワードなどの機密情報は
       // electron.safeStorage を使用して暗号化することを強く推奨します。
@@ -55,12 +50,18 @@ export function registerSettingsHandlers() {
     }
   });
 
-  // DB接続をテストするハンドラ
-  ipcMain.handle(channels.TEST_DB_CONNECTION, async (event, params: DbConnectionParams): Promise<{ success: boolean; message: string }> => {
+  // 特定のDB接続をテストするハンドラ
+  ipcMain.handle(channels.TEST_DB_CONNECTION, async (event, params: DbSetting): Promise<{ success: boolean; message: string }> => {
     let connection: mysql.Connection | null = null;
     try {
       // passwordが空文字またはnullの場合、接続パラメータから除外する
-      const connectionParams: mysql.ConnectionOptions = { ...params };
+      const connectionParams: mysql.ConnectionOptions = {
+        host: params.host,
+        port: params.port,
+        user: params.user,
+        password: params.password,
+        database: params.database,
+      };
       if (!connectionParams.password) {
         delete connectionParams.password;
       }
@@ -68,9 +69,9 @@ export function registerSettingsHandlers() {
       connection = await mysql.createConnection(connectionParams);
       await connection.ping(); // 接続確認
 
-      return { success: true, message: 'データベースへの接続に成功しました。' };
+      return { success: true, message: `[${params.name}] データベースへの接続に成功しました。` };
     } catch (error: any) {
-      console.error('DB Connection Test Failed:', error);
+      console.error(`[${params.name}] DB Connection Test Failed:`, error);
       // エラーメッセージを分かりやすく整形
       let friendlyMessage = `接続に失敗しました: ${error.message}`;
       if (error.code === 'ECONNREFUSED') {
@@ -82,7 +83,7 @@ export function registerSettingsHandlers() {
       } else if (error.code === 'ENOTFOUND') {
         friendlyMessage = `ホスト'${params.host}'が見つかりませんでした。ホスト名が正しいか、DNS設定を確認してください。`;
       }
-      return { success: false, message: friendlyMessage };
+      return { success: false, message: `[${params.name}] ${friendlyMessage}` };
     } finally {
       if (connection) {
         await connection.end();

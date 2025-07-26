@@ -37,6 +37,13 @@ export class HomeComponent implements OnInit {
       icon: 'vpn_key',
       route: '/license-activator',
       color: '#e8f5e9'
+    },
+    {
+      title: 'テーブルデータ抽出', 
+      description: 'データベースに接続し、テーブルデータをZIP形式で出力します。',
+      icon: 'table_view',
+      route: '/data-extractor',
+      color: '#e8f5e9'
     }
   ];
 
