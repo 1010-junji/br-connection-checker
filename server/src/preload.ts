@@ -1,9 +1,9 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { channels } from './shared-channels';
-import { DbConnectionProfile } from './features/types';
+import { DbConnectionParams } from './features/types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  // (既存のAPIは省略)
+  // --- 疎通チェッカー ---
   runCheck: (mode: string, params: any) => ipcRenderer.invoke(channels.RUN_CHECK, mode, params),
   saveLog: (logContent: string) => ipcRenderer.invoke(channels.SAVE_LOG, logContent),
   onCheckProgress: (callback: (event: IpcRendererEvent, log: string) => void) => {
@@ -28,7 +28,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // --- アプリケーション設定機能 ---
   getAppSettings: () => ipcRenderer.invoke(channels.GET_APP_SETTINGS),
-  saveAppSettings: (profiles: DbConnectionProfile[]) => ipcRenderer.invoke(channels.SAVE_APP_SETTINGS, profiles),
-  testDbConnection: (profile: DbConnectionProfile) => ipcRenderer.invoke(channels.TEST_DB_CONNECTION, profile),
-  openDirectoryDialog: () => ipcRenderer.invoke(channels.OPEN_DIRECTORY_DIALOG),
+  saveAppSettings: (settings: DbConnectionParams) => ipcRenderer.invoke(channels.SAVE_APP_SETTINGS, settings),
+  testDbConnection: (params: DbConnectionParams) => ipcRenderer.invoke(channels.TEST_DB_CONNECTION, params),
 });

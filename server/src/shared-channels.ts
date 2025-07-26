@@ -17,5 +17,4 @@ export const channels = {
     GET_APP_SETTINGS: 'get-app-settings',
     SAVE_APP_SETTINGS: 'save-app-settings',
     TEST_DB_CONNECTION: 'test-db-connection',
-    OPEN_DIRECTORY_DIALOG: 'open-directory-dialog',
 };
