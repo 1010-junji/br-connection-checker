@@ -1,6 +1,6 @@
 {
   "name": "br-setup-toolkit",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "dist/main.js",
   "scripts": {
     "build:main": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --external:electron",

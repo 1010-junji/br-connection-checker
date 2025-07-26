@@ -18,6 +18,7 @@ class BackupFileProcessor {
       GLOBAL: "global.xml",
       PROJECT: "project.xml",
     },
+    VERSION_TXT: "version.txt",
   };
 
   constructor(private webContents: Electron.WebContents) {}
@@ -109,6 +110,21 @@ class BackupFileProcessor {
       const globalXmlFullPath = path.join(tempDir, globalXmlEntry.entryName);
       const baseDir = path.dirname(globalXmlFullPath); // global.xml があるディレクトリが基点
 
+      try {
+        const versionTxtPath = path.join(baseDir, this.CONFIG.VERSION_TXT);
+        // version.txtを読み込む
+        const versionContent = await fs.readFile(versionTxtPath, "utf-8");
+        // 最初の行を抽出（改行コードで分割し、最初の要素を取得）
+        const firstLine = versionContent.split(/\r?\n/)[0].trim();
+        if (firstLine) {
+          // 抽出したバージョン情報をログに出力
+          this.log(`  - MCバックアップファイルのバージョン: ${firstLine}`);
+        }
+      } catch (error) {
+        // version.txt が存在しない、または読み込めない場合は、エラーにせず処理を続行する
+        // console.log('version.txt not found or could not be read, skipping.');
+      }
+      
       // 2. global.xml を処理
       await this.processXml(globalXmlFullPath);
       let processedCount = 1;
