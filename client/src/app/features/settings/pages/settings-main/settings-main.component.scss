@@ -1,23 +1,63 @@
 .settings-container {
-    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+    height: 100%;
+}
 
-    .mat-card-header .mat-icon[fontSet="material-icons-two-tone"] {
-        font-size: 40px;
+// 左側のカード (プロファイルリスト)
+.profile-list-card {
+    display: flex;
+    flex-direction: column;
+
+    .profile-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .mat-card-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 0 0 16px 0;
     }
 }
 
-.settings-form {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    /* フォーム間の少しの隙間 */
+.list-subtitle {
+    font-size: 0.8em;
+    color: rgba(0, 0, 0, 0.54);
 }
 
+// 右側のカード (フォーム)
+.form-card {
+    display: flex;
+    flex-direction: column;
+
+    .mat-card-content {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+}
+
+// フォーム内の要素
 .form-row {
     display: flex;
     gap: 16px;
-    /* 横並びのフォームの隙間 */
-    width: 100%;
+}
+
+.profile-name-field {
+    flex: 2;
+}
+
+.db-type-field {
+    flex: 1;
 }
 
 .host-field {
@@ -40,6 +80,53 @@
     width: 100%;
 }
 
-.mat-card-actions {
+.mat-divider {
+    margin: 16px 0;
+}
+
+.derby-note {
+    display: flex;
+    align-items: center;
     gap: 8px;
+    font-size: 0.9em;
+    color: rgba(0, 0, 0, 0.7);
+    background-color: #f5f5f5;
+    padding: 8px;
+    border-radius: 4px;
+
+    .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.mat-card-actions {
+    margin-top: auto; // アクションをカード下部に固定
+    gap: 8px;
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+}
+
+// プロファイルが選択されていない時の表示
+.placeholder-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    color: #9e9e9e;
+
+    .placeholder-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+    }
+
+    .placeholder-text {
+        margin-top: 16px;
+    }
 }

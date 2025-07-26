@@ -1,60 +1,119 @@
 <div class="settings-container">
-    <mat-card>
-        <mat-card-header>
-            <mat-icon mat-card-avatar fontSet="material-icons-two-tone">storage</mat-icon>
-            <mat-card-title>データベース接続設定</mat-card-title>
-            <mat-card-subtitle>アプリケーションが使用するMySQLデータベースへの接続情報を設定します。</mat-card-subtitle>
+    <!-- プロファイルリスト -->
+    <mat-card class="profile-list-card">
+        <mat-card-header class="profile-list-header">
+            <mat-card-title>接続プロファイル</mat-card-title>
+            <button mat-icon-button color="primary" (click)="addNewProfile()" matTooltip="新しいプロファイルを追加">
+                <mat-icon>add_circle</mat-icon>
+            </button>
         </mat-card-header>
         <mat-card-content>
-            <form [formGroup]="settingsForm" class="settings-form">
-                <div class="form-row">
-                    <mat-form-field appearance="outline" class="host-field">
-                        <mat-label>ホスト名 / IPアドレス</mat-label>
-                        <input matInput formControlName="host" required>
-                        <mat-error *ngIf="settingsForm.get('host')?.hasError('required')">必須です</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" class="port-field">
-                        <mat-label>ポート番号</mat-label>
-                        <input matInput type="number" formControlName="port" required>
-                        <mat-error *ngIf="settingsForm.get('port')?.hasError('required')">必須です</mat-error>
-                        <mat-error
-                            *ngIf="settingsForm.get('port')?.hasError('min') || settingsForm.get('port')?.hasError('max')">1-65535の範囲で入力してください</mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-row">
-                    <mat-form-field appearance="outline" class="user-field">
-                        <mat-label>ユーザー名</mat-label>
-                        <input matInput formControlName="user" required>
-                        <mat-error *ngIf="settingsForm.get('user')?.hasError('required')">必須です</mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" class="password-field">
-                        <mat-label>パスワード</mat-label>
-                        <input matInput type="password" formControlName="password"
-                            matTooltip="パスワードは暗号化されずに保存されます。取り扱いにご注意ください。">
-                    </mat-form-field>
-                </div>
-
-                <mat-form-field appearance="outline" class="full-width-field">
-                    <mat-label>データベース名</mat-label>
-                    <input matInput formControlName="database" required>
-                    <mat-error *ngIf="settingsForm.get('database')?.hasError('required')">必須です</mat-error>
-                </mat-form-field>
-            </form>
+            <mat-selection-list #profileList [multiple]="false" (selectionChange)="onProfileSelected($event)">
+                <mat-list-option *ngFor="let profile of profiles" [value]="profile"
+                    [selected]="profile.id === selectedProfile?.id">
+                    <mat-icon mat-list-icon>{{ profile.dbType === 'mysql' ? 'storage' : 'folder_special' }}</mat-icon>
+                    <div mat-line>{{ profile.name }}</div>
+                    <div mat-line class="list-subtitle">{{ profile.dbType }}</div>
+                </mat-list-option>
+            </mat-selection-list>
         </mat-card-content>
-        <mat-card-actions align="end">
-            <button mat-stroked-button color="primary" (click)="testConnection()"
-                [disabled]="settingsForm.invalid || isTesting || isSaving">
-                <mat-icon>power</mat-icon>
-                接続テスト
-            </button>
-            <button mat-raised-button color="primary" (click)="saveSettings()"
-                [disabled]="settingsForm.invalid || isSaving || isTesting">
-                <mat-icon>save</mat-icon>
-                設定を保存
-            </button>
-        </mat-card-actions>
+    </mat-card>
+
+    <!-- 設定フォーム -->
+    <mat-card class="form-card">
+        <ng-container *ngIf="selectedProfile; else noProfileSelected">
+            <form [formGroup]="settingsForm">
+                <mat-card-header>
+                    <mat-card-title>プロファイル編集</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <!-- 共通設定 -->
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="profile-name-field">
+                            <mat-label>プロファイル名</mat-label>
+                            <input matInput formControlName="name" required>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="db-type-field">
+                            <mat-label>データベースタイプ</mat-label>
+                            <mat-select formControlName="dbType">
+                                <mat-option value="mysql">MySQL</mat-option>
+                                <mat-option value="derby">Apache Derby</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-divider></mat-divider>
+
+                    <!-- MySQL用フォーム -->
+                    <ng-container *ngIf="settingsForm.get('dbType')?.value === 'mysql'" formGroupName="connection">
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="host-field">
+                                <mat-label>ホスト名 / IP</mat-label>
+                                <input matInput formControlName="host" required>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="port-field">
+                                <mat-label>ポート</mat-label>
+                                <input matInput type="number" formControlName="port" required>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="user-field">
+                                <mat-label>ユーザー名</mat-label>
+                                <input matInput formControlName="user" required>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="password-field">
+                                <mat-label>パスワード</mat-label>
+                                <input matInput type="password" formControlName="password">
+                            </mat-form-field>
+                        </div>
+                        <mat-form-field appearance="outline" class="full-width-field">
+                            <mat-label>データベース名</mat-label>
+                            <input matInput formControlName="database" required>
+                        </mat-form-field>
+                    </ng-container>
+
+                    <!-- Derby用フォーム -->
+                    <ng-container *ngIf="settingsForm.get('dbType')?.value === 'derby'" formGroupName="connection">
+                        <mat-form-field appearance="outline" class="full-width-field">
+                            <mat-label>データベースのパス</mat-label>
+                            <input matInput formControlName="path" required>
+                            <button mat-icon-button matSuffix (click)="selectDerbyPath()" matTooltip="ディレクトリを選択">
+                                <mat-icon>folder_open</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="user-field">
+                                <mat-label>ユーザー名</mat-label>
+                                <input matInput formControlName="user">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="password-field">
+                                <mat-label>パスワード</mat-label>
+                                <input matInput type="password" formControlName="password">
+                            </mat-form-field>
+                        </div>
+                        <p class="derby-note">
+                            <mat-icon>info</mat-icon>
+                            <span>接続テストは、指定されたパスの存在確認のみを行います。</span>
+                        </p>
+                    </ng-container>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                    <button mat-button color="warn" (click)="deleteSelectedProfile()"
+                        [disabled]="!selectedProfile">削除</button>
+                    <div class="spacer"></div>
+                    <button mat-stroked-button color="primary" (click)="testConnection()"
+                        [disabled]="settingsForm.invalid || isProcessing">接続テスト</button>
+                    <button mat-raised-button color="primary" (click)="saveProfiles()"
+                        [disabled]="isProcessing">すべて保存</button>
+                </mat-card-actions>
+            </form>
+        </ng-container>
+
+        <ng-template #noProfileSelected>
+            <div class="placeholder-container">
+                <mat-icon class="placeholder-icon">playlist_add</mat-icon>
+                <p class="placeholder-text">左のリストからプロファイルを選択するか、<br>「+」ボタンで新しいプロファイルを作成してください。</p>
+            </div>
+        </ng-template>
     </mat-card>
 </div>

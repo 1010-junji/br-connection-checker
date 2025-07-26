@@ -1,5 +1,6 @@
 import { IpcRendererEvent } from 'electron';
 
+// --- 共通 ---
 export interface FileDialogOpenResult {
   canceled: boolean;
   filePath?: string;
@@ -16,12 +17,28 @@ export interface OpenWindowResult {
     error?: string;
 }
 
-export interface DbConnectionParams {
+// --- 設定機能 ---
+export type DbType = 'mysql' | 'derby';
+
+export interface MysqlConnectionParams {
     host: string;
     port: number;
     user: string;
     password?: string;
     database: string;
+}
+
+export interface DerbyConnectionParams {
+    path: string;
+    user?: string;
+    password?: string;
+}
+
+export interface DbConnectionProfile {
+    id: string;
+    name: string;
+    dbType: DbType;
+    connection: MysqlConnectionParams | DerbyConnectionParams;
 }
 
 export interface TestDbConnectionResult {
@@ -45,9 +62,10 @@ export interface IElectronAPI {
   onLicenseWindowError: (callback: (event: IpcRendererEvent, errorInfo: { url: string; error: string; }) => void) => () => void;
 
   // --- アプリケーション設定機能 ---
-  getAppSettings: () => Promise<DbConnectionParams>;
-  saveAppSettings: (settings: DbConnectionParams) => Promise<{ success: boolean; error?: string }>;
-  testDbConnection: (params: DbConnectionParams) => Promise<TestDbConnectionResult>;
+  getAppSettings: () => Promise<DbConnectionProfile[]>;
+  saveAppSettings: (profiles: DbConnectionProfile[]) => Promise<{ success: boolean; error?: string }>;
+  testDbConnection: (profile: DbConnectionProfile) => Promise<TestDbConnectionResult>;
+  openDirectoryDialog: () => Promise<FileDialogOpenResult>;
 }
 
 declare global {
